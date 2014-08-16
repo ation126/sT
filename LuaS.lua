@@ -262,9 +262,9 @@ print("20140801"-"20140731");
 
 --[[
 
-local p = "D:/Cache/LuaTest/Usu/"  
-local m_package_path = package.path  
-package.path = string.format("%s;%s?.lua;%s/LuaS.lua",  m_package_path, p, p) 
+local p = "D:/Cache/LuaTest/Usu/"
+local m_package_path = package.path
+package.path = string.format("%s;%s?.lua;%s/LuaS.lua",  m_package_path, p, p)
 
 --print(package.path) -->lua文件的搜索路径
 
@@ -1539,13 +1539,13 @@ do
 local tbl = {"apple", "pear", "orange", "grape"}      --纯数组,无hash
 
 table.sort(tbl)                                                              --默认升序
-print(table.concat(tbl, "、"))    
+print(table.concat(tbl, "、"))
 
 
 local sort_func1 = function(a, b) return a > b end  --大者在前
 table.sort(tbl, sort_func1)                                           --降序
 print(table.concat(tbl, "、"))
- 
+
 local sort_func2 = function(a, b) return a < b end  --小前
 table.sort(tbl, sort_func2)                                           --升序
 print(table.concat(tbl, "、"))
@@ -3664,6 +3664,9 @@ end
 function init()
 	page.callAsy('onStart', {});                --< 异调 cl.lua onStart函数
 	page.setPageRecvCallBack(onRecvCb);         --回调函数onRecvCb
+    page.callAsy("OnStart",{})      --启动策略
+    page.setPageRecvCallBack(HandleRecvCallBack);    --注册回调
+
 end
 init();
 
