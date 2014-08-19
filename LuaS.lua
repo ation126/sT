@@ -1,82 +1,53 @@
 
 
----------------------------È«¾Ö»·¾³--------------------------------
+
+---------------------------å…¨å±€ç¯å¢ƒ--------------------------------
 
 --[[
 
 print("\n","-----------------_G---------------------------");
+for k,v in pairs(_G) do print(k,v); end
 
-for k,v in pairs(_G) do
-	print(k,v);
-end
-
-s
 print("\n","-----------------_G.table---------------------------");
-
-for k,v in pairs(_G.table) do
-	print(k,v);
-end
-
+for k,v in pairs(_G.table) do print(k,v); end
 
 print("\n","-----------------_G.io---------------------------");
-
-for k,v in pairs(_G.io) do
-	print(k,v);
-end
+for k,v in pairs(_G.io) do print(k,v); end
 
 print("\n","-----------------_G.coroutine---------------------------");
-
-for k,v in pairs(_G.coroutine) do
-	print(k,v);
-end
+for k,v in pairs(_G.coroutine) do print(k,v); end
 
 print("\n","-----------------_G.string---------------------------");
-for k,v in pairs(_G.string) do
-	print(k,v);
-end
+for k,v in pairs(_G.string) do print(k,v); end
 
 
 print("\n","-----------------_G.package---------------------------");
-for k,v in pairs(_G.package) do
-	print(k,v);
-end
+for k,v in pairs(_G.package) do print(k,v); end
 
 print("\n","-----------------_G.os---------------------------");
-for k,v in pairs(_G.os) do
-	print(k,v);
-end
+for k,v in pairs(_G.os) do print(k,v); end
 
 print("\n","-----------------_G.math---------------------------");
-for k,v in pairs(_G.math) do
-	print(k,v);
-end
-
+for k,v in pairs(_G.math) do print(k,v); end
 
 print("\n","-----------------_G.debug---------------------------");
-for k,v in pairs(_G.debug) do
-	print(k,v);
-end
+for k,v in pairs(_G.debug) do print(k,v); end
 
-
-do           --  clunk
-
-for k, v in pairs(_G) do print(k, v) end
-
-end
 --]]
 
+----------------------------------- åˆ†æ”¯ if/elseif/ elseif/else/end /elseif/end----------------------------
 
 --[[
 do           --  clunk
-print "·ÖÖ§ IF-ElseIF-ElseIF-End"
+print "åˆ†æ”¯ IF-ElseIF-ElseIF-End"
 
-local age=40      -- ¾Ö²¿±äÁ¿
+local age=40      -- å±€éƒ¨å˜é‡
 local sex="Male"
 
 --age = io.read()
 
 if age == 40 and sex =="Male" then
-    print("ÄĞÈËËÄÊ®Ò»Ö¦»¨")
+    print("ç”·äººå››åä¸€æèŠ±")
 elseif age > 60 and sex ~="Female" then
     print("old man without country!")
 elseif age < 20 then
@@ -91,23 +62,110 @@ end
 --]]
 
 
-----------------------------------------Ê±¼äÓëÈÕÆÚ ·ÖÖ§ switch---------------------------------
+----------------------------------- forå¾ªç¯ è·³å‡ºbreak ç»ˆæ­¢ ç»§ç»­ continue----------------------------
+
+for i = 1, 10 do
+    repeat
+        if i == 5 then
+            break
+        end
+        print(i)
+    until true
+end
+
+
+local t = {1,2,3,4,5,6};
+
+for i, v in ipairs(t) do
+  local bContinue = false;
+  if i==3 then
+     bContinue = true;
+  end
+  if bContinue == false then
+     print(i.." "..v);
+  end
+end
+
+----------------------------------------åç¨‹ å¤šçº¿ç¨‹---create----status-yield-resume------------
+
+
+--[[
+
+local co = coroutine.create(function () print("hi") end) --åˆ›å»ºååŒç¨‹åºæˆåŠŸæ—¶ï¼Œä¸ºæŒ‚èµ·æ€(suspended)ï¼Œæ­¤æ—¶ååŒç¨‹åºæœªè¿è¡Œ
+print(co)     --> thread: 0x8071d98
+print(coroutine.status(co))     --> suspended  --ååŒ3çŠ¶æ€ï¼šæŒ‚èµ·(suspended)ã€è¿è¡Œ(running)ã€ç»ˆæ­¢(dead)
+coroutine.resume(co)             --> hi         --resumeè¿è¡Œ(running)
+print(coroutine.status(co))     --> dead       --ååŒç¨‹åºæ‰“å°å‡º"hi"åï¼Œä»»åŠ¡å®Œæˆï¼Œä¾¿è¿›å…¥ç»ˆæ­¢æ€(dead)
+
+co = coroutine.create(function () for i=1,10 do  print("----co----  ", i) ; coroutine.yield()  end end) --yieldå¤„è¢«æŒ‚èµ·(suspended)
+coroutine.resume(co)             --> co   1
+print(coroutine.status(co))     --> suspended
+coroutine.resume(co)             --> co   2
+coroutine.resume(co)            --> co   3
+coroutine.resume(co)            --> co   10
+coroutine.resume(co)           -- prints nothing
+print(coroutine.resume(co))       --> false   cannot resume dead coroutine --æœ€åä¸€æ¬¡è°ƒç”¨æ—¶ï¼ŒååŒä½“å·²ç»“æŸï¼Œå› æ­¤ååŒç¨‹åºå¤„äºç»ˆæ­¢æ€ã€‚å¦‚æ¿€æ´»å®ƒï¼Œresumeå°†è¿”å›falseå’Œé”™è¯¯ä¿¡æ¯
+
+co = coroutine.create(function (a,b,c) print("co ", a,b,c) end)
+coroutine.resume(co, 1, 2, 3)      --> co  1  2  3 --resumeæŠŠå‚æ•°ä¼ é€’ç»™ååŒçš„ä¸»ç¨‹åº
+
+co = coroutine.create(function (a,b)  coroutine.yield(a + b, a - b) end)  --æ•°æ®ç”±yieldä¼ ç»™resumeã€‚
+print(coroutine.resume(co, 20, 10))    --> true  30  10  --trueè¡¨æ˜è°ƒç”¨æˆåŠŸï¼Œtrueä¹‹åçš„éƒ¨åˆ†ï¼Œå³æ˜¯yieldçš„å‚æ•°
+
+co = coroutine.create (function ()  print("++++co+++++  ", coroutine.yield() )  end)
+
+coroutine.resume(co)
+coroutine.resume(co, 4, 5)      --> co  4  5 --resumeçš„å‚æ•°ï¼Œä¼šè¢«ä¼ é€’ç»™yield
+
+co = coroutine.create(function ()    return 6, 7  end)
+print(coroutine.resume(co))     --> true  6  7  ååŒä»£ç ç»“æŸæ—¶çš„è¿”å›å€¼ï¼Œä¹Ÿä¼šä¼ ç»™resume
+
+--assert(0, "invalid input") ;    --æ–­è¨€ false nil
+
+--]]
+
+
+----------------------------------------æ—¶é—´ä¸æ—¥æœŸ Time/Date--------------------
+
+--[[
+do           --  clunk
+
+print(os.time{year=1971, month=1, day=1, hour=0})                   -->31507200  æ„é€ æ—¶é—´
+print(os.time{year=1971, month=1, day=1, hour=0, sec=1})            -->31507201  æ„é€ æ—¶é—´
+print(os.time{year=1971, month=1, day=1, hour=0, minute=1, sec=1})  -->31510801  æ„é€ æ—¶é—´
+print(os.time{year=1970, month=1, day=1})                           -->14400  èµ·å§‹æ—¶é—´ 1970.01.01
+
+print(os.time() );                        -->1403084206  ç©ºå‚æ•°:é»˜è®¤æœ¬æœºç³»ç»Ÿæ—¶é—´(ç´¯è®¡ç§’æ•° å§‹1970.01.01)
+print(os.date("%c",os.time() ) );        -->06/18/14 17:36:46  dateæ—¥æœŸæ—¶é—´æ ¼å¼è¾“å‡º timeç§’æ•° åå‡½æ•°
+print(os.date("%Y%m%d %X",os.time() ) ); -->20140618 17:46:41
+--  %a-weekday:Wed  %A-weekday:Wednesday  %b-month:Sep  %B-month:September  %c-date&time:09/16/9823:48:10
+--  %d-day:01-31  %H-hour24:00-23  %I-hour12:01-12  %M-minute:00-59  %m-month:00-12  %p-am\pm:pm  %S-second:00-61
+--  %w-weekday:0-6  %x-date:09/16/98  %X-time:23:48:10  %Y-year4:1998  %y-year2:00-99  %%-%
+
+for k,v in pairs(os.date("*t",os.time())) do print(k,v); end
+ --> ä¸€ç»´è¡¨æ ¼  [hour]=17,[min]=36,[wday]=4,[day]=18,[month]=6,[year]=2014,[sec]=46,[yday]=169,[isdst]=FALSE
+
+end
+--]]
+
+
+----------------------------------------æ—¶é—´ä¸æ—¥æœŸ åˆ†æ”¯ switch---------------------------------
 --[[
 switch={}
-switch[1]=function() return 'Ò»ÔÂ' end
-switch[2]=function() return '¶şÔÂ' end
-switch[3]=function() return 'ÈıÔÂ' end
-switch[4]=function() return 'ËÄÔÂ' end
-switch[5]=function() return 'ÎåÔÂ' end
-switch[6]=function() return 'ÁùÔÂ' end
-switch[7]=function() return 'ÆßÔÂ' end
-switch[8]=function() return '°ËÔÂ' end
-switch[9]=function() return '¾ÅÔÂ' end
-switch[10]=function() return 'Ê®ÔÂ' end
-switch[11]=function() return 'Ê®Ò»ÔÂ' end
-switch[12]=function() return 'Ê®¶şÔÂ' end
+switch[1]=function() return 'ä¸€æœˆ' end
+switch[2]=function() return 'äºŒæœˆ' end
+switch[3]=function() return 'ä¸‰æœˆ' end
+switch[4]=function() return 'å››æœˆ' end
+switch[5]=function() return 'äº”æœˆ' end
+switch[6]=function() return 'å…­æœˆ' end
+switch[7]=function() return 'ä¸ƒæœˆ' end
+switch[8]=function() return 'å…«æœˆ' end
+switch[9]=function() return 'ä¹æœˆ' end
+switch[10]=function() return 'åæœˆ' end
+switch[11]=function() return 'åä¸€æœˆ' end
+switch[12]=function() return 'åäºŒæœˆ' end
 
-print(switch[1]())  -->Ò»ÔÂ
+print(switch[1]())  -->ä¸€æœˆ
 --]]
 
 --[[
@@ -133,32 +191,123 @@ end
 --]]
 
 
---------------------------------¼ÓÔØ dofile/require/loadstring------------------------------
-
---dofile()£º¶ÁÈëÎÄ¼ş±àÒë²¢Ö´ĞĞ,dofileÃ¿´Î¶¼Òª±àÒë, ±¾ÖÊÉÏÎ»¸¨Öúº¯Êı£¬ÕæÕıÊµÏÖÆä¹¦ÄÜµÄÊÇloadfile()
---loadfile()£º±àÒë´úÂë³ÉÖĞ¼äÂë£¬·µ»Ø±àÒëºóchunk×÷Îªº¯Êı£¬²»Ö´ĞĞ´úÂë£¬²»Å×³ö´íÎóĞÅÏ¢£¬·µ»Ø´íÎóÂëºÍnil£»±àÒëÒ»´Î£¬µ«¿É¶à´ÎÔËĞĞ
---loadstring()º¯Êı£º¶ÁÈëµÄ²»ÊÇchunk£¬¶øÊÇ´ÓÒ»¸ö´®ÖĞ¶ÁÈë£» ÔËĞĞ´íÎóµÄ»°£¬Ò²²»»áÅ×³ö´íÎó£¬¶øÊÇ·µ»Ø´íÎóÂëºÍnil£»
---loadstringºÍloadfile¶¼²»»á²úÉú±ß½çĞ§Ó¦£¬ËûÃÇ½ö½öÊÇ±àÒë£¬¶ø²»ÊÇ¶¨Òåchunk³ÉÎª×Ô¼ºÄÚ²¿µÄÒ»¸öÄäÃûº¯Êı£»
---require º¯Êı¼ÓÔØÒ»¸öÄ£¿éÊ±£¬ÔÚ±ípackage.loadedÖĞ²éÕÒÊÇ·ñ´æÔÚ£¬ÓĞµÄ»°¾Í·µ»Ø¸ÃÖµ£»
---loadfile»á½«ÎÄ¼şµ±×÷º¯ÊıÀ´¼ÓÔØ£¬require»á½«Ä£¿éÃû×÷Îª²ÎÊı´«¸ø¸Ãº¯Êı¡£ÈôÓĞ·µ»ØÖµÔò½«·µ»ØÖµ·ÅÈë±ípackage.loadedÖĞ¡£ÈôÃ»ÓĞÔò·µ»Ø±ípackage.loadedÖĞµÄÖµ¡£
---module º¯Êı£º
-
 --[[
-module ¡°mymodule¡±
-local modname = ¡°mymodule¡±  --¶¨ÒåÄ£¿éÃû
-local M = {}                  --¶¨ÒåÓÃÓÚ·µ»ØµÄÄ£¿é±í
-_G[modname] = M               --½«Ä£¿é±í¼ÓÈëµ½È«¾Ö±äÁ¿ÖĞ
-package.loaded[modname] = M  --½«Ä£¿é±í¼ÓÈëµ½package.loadedÖĞ£¬·ÀÖ¹¶à´Î¼ÓÔØ
-setfenv(1,M)                  --½«Ä£¿é±íÉèÖÃÎªº¯ÊıµÄ»·¾³±í£¬ÕâÊ¹µÃÄ£¿éÖĞËùÓĞ²Ù×÷ÊÇÒÔÔÚÄ£¿é±íÖĞ£¬¶¨Òåº¯Êı¾ÍÖ±½Ó¶¨ÒåÔÚÄ£¿é±íÖĞ
+local curDaySec=os.time();                                 --åˆ†éš”å¾ªç¯ curDaySec=lmDaySec-24*3600;
+local curDay=os.date("*t",curDaySec);                      --å½“å‰æ—¥æœŸTable
+local lmDaySec=curDaySec-27*24*3600;                       --27å¤©å‰,è·¨æœˆä¸èƒ½æŸ¥è¯¢æˆäº¤è®°å½•,é¡»åˆ†å‰²æŸ¥è¯¢
+local lmDay=os.date("*t",lmDaySec);
+local endTime  =os.date("%Y%m%d", os.time{ year=curDay.year, month=curDay.month, day=curDay.day } );
+local startTime=os.date("%Y%m%d", os.time{ year=lmDay.year,  month=lmDay.month,  day=lmDay.day  } );
+
+print(os.date("%Y%m%d %X",os.time() ) ); -->20140618 17:46:41
+print(os.time{year=1971, month=1, day=1, hour=0, minute=1, sec=1})  -->31510801  æ„é€ æ—¶é—´
+
 
 --]]
 
 
--------------------------¼ÓÔØ ÎÄ¼ş Ä£¿é ×Ö·û´® require dofie loadfile  loadstring load module ---------------------------
+--[[
+local date={};                          --æ—¥æœŸæ—¶é—´å˜é‡é›†åˆ
+date.curDay=os.date("*t",os.time());    --å½“å‰æ—¥æœŸæ—¶é—´
+date.curMonthFirstDayS  =os.time{year=date.curDay.year, month=date.curDay.month, day=1,hour=0};    --å½“æœˆ1å·ç§’æ•°
+date.nextMonthFirstDayS=os.time{year=date.curDay.year, month=date.curDay.month+1, day=1,hour=0};   --æ¬¡æœˆ1å·ç§’æ•°
+date.curMonthFirstDay=os.date("*t",date.curMonthFirstDayS);    --å½“æœˆ1å·æ—¥æœŸè¡¨  --wdayè¥¿å†æ˜ŸæœŸå¤©/ä¸ƒä¸º1, å‘¨å…­ä¸º7 ä¸­å†-1å¾ªç¯
+date.nextMonthFirstDay=os.date("*t",date.nextMonthFirstDayS);  --æ¬¡æœˆ1å·æ—¥æœŸè¡¨
+
+local wdays={  [2]=function() return 3 end; [3]=function() return 1 end; [4]=function() return 1 end;
+				[5]=function() return 1 end; [6]=function() return 1 end; [7]=function() return 1 end;
+				[1]=function() return 2 end; }
+
+date.curMonthLastTradeDay=os.date("*t", date.nextMonthFirstDayS-3600*24*wdays[date.nextMonthFirstDay.wday]()  ); --æœ¬æœˆæœ€åä¸€ä¸ªè‡ªç„¶äº¤æ˜“æ—¥
+
+print(os.date("%Y%m%d",os.time()));
+
+--print(os.date("%Y%m%d", os.time{ year=os.date("*t",os.time()).year, month=os.date("*t",os.time()).month-1, day=os.date("*t",os.time()).day+1 }    ));
+
+local curDay=os.date("*t",os.time());
+print(os.date("%Y%m%d", os.time()-29*24*3600   ));
+local tDay=os.time{year=2016, month=3, day=31,hour=0};
+print(os.date("%Y%m%d", tDay   ));
+print(os.date("%Y%m%d", tDay-27*24*3600   ));
+
+for k,v in pairs(date.curMonthLastTradeDay) do
+--	print(k,'\t', v);
+end
+
+--]]
+
+--[[
+local date={};                          --æ—¥æœŸæ—¶é—´å˜é‡é›†åˆ
+date.curDay=os.date("*t",os.time());    --å½“å‰æ—¥æœŸæ—¶é—´
+
+date.curMonthFirstDayS  =os.time{year=date.curDay.year, month=date.curDay.month, day=1,hour=0};    --å½“æœˆ1å·ç§’æ•°
+date.nextMonthFirstDayS=os.time{year=date.curDay.year, month=date.curDay.month+1, day=1,hour=0};   --æ¬¡æœˆ1å·ç§’æ•°
+
+date.curMonthFirstDay=os.date("*t",date.curMonthFirstDayS);    --å½“æœˆ1å·æ—¥æœŸè¡¨  --wdayè¥¿å†æ˜ŸæœŸå¤©/ä¸ƒä¸º1, å‘¨å…­ä¸º7 ä¸­å†-1å¾ªç¯
+date.nextMonthFirstDay=os.date("*t",date.nextMonthFirstDayS);  --æ¬¡æœˆ1å·æ—¥æœŸè¡¨
+
+local wdays={  [2]=function() return 3 end; [3]=function() return 1 end; [4]=function() return 1 end;
+				[5]=function() return 1 end; [6]=function() return 1 end; [7]=function() return 1 end;
+				[1]=function() return 2 end; }
+
+date.curMonthLastTradeDay=os.date("*t", date.nextMonthFirstDayS-3600*24*wdays[date.nextMonthFirstDay.wday]()  ); --æœ¬æœˆæœ€åä¸€ä¸ªè‡ªç„¶äº¤æ˜“æ—¥
+
+local curDay=os.date("*t",os.time());    --å½“å‰æ—¥æœŸæ—¶é—´
+local nmFirstDayS=os.time{year=curDay.year, month=curDay.month+1, day=1,hour=0};   --æ¬¡æœˆ1å·ç§’æ•°
+local cmLastTradeDay=os.date("*t", nmFirstDayS-3600*24*wdays[os.date("*t",nmFirstDayS).wday]()  ); --æœ¬æœˆæœ€åä¸€ä¸ªè‡ªç„¶äº¤æ˜“æ—¥(èŠ‚å‡æ—¥ä¸ºæ¬¡æœˆå¼€ç›˜å¹³ä»“)
+local cmLastTradeTimeS=os.time{year=curDay.year, month=curDay.month, day=cmLastTradeDay.day,hour=14, minute=40, sec=0}; --æœ¬æœˆåº•å¹³ä»“æ—¶é—´ 14:40
+
+--print(os.time())
+--print(cmLastTradeTimeS)
+
+local cmltd=table.concat(cmLastTradeDay,'');
+print(cmltd)
+
+for k,v in pairs(cmLastTradeDay) do
+--print(k,'\t', v);
+end
+
+print("20140801"-"20140731");
+
+--]]
+
+
+
+
+--------------------------------åŠ è½½ dofile/require/loadstring------------------------------
+
+--dofile()ï¼šè¯»å…¥æ–‡ä»¶ç¼–è¯‘å¹¶æ‰§è¡Œ,dofileæ¯æ¬¡éƒ½è¦ç¼–è¯‘, æœ¬è´¨ä¸Šä½è¾…åŠ©å‡½æ•°ï¼ŒçœŸæ­£å®ç°å…¶åŠŸèƒ½çš„æ˜¯loadfile()
+--loadfile()ï¼šç¼–è¯‘ä»£ç æˆä¸­é—´ç ï¼Œè¿”å›ç¼–è¯‘åchunkä½œä¸ºå‡½æ•°ï¼Œä¸æ‰§è¡Œä»£ç ï¼Œä¸æŠ›å‡ºé”™è¯¯ä¿¡æ¯ï¼Œè¿”å›é”™è¯¯ç å’Œnilï¼›ç¼–è¯‘ä¸€æ¬¡ï¼Œä½†å¯å¤šæ¬¡è¿è¡Œ
+--loadstring()å‡½æ•°ï¼šè¯»å…¥çš„ä¸æ˜¯chunkï¼Œè€Œæ˜¯ä»ä¸€ä¸ªä¸²ä¸­è¯»å…¥ï¼› è¿è¡Œé”™è¯¯çš„è¯ï¼Œä¹Ÿä¸ä¼šæŠ›å‡ºé”™è¯¯ï¼Œè€Œæ˜¯è¿”å›é”™è¯¯ç å’Œnilï¼›
+--loadstringå’Œloadfileéƒ½ä¸ä¼šäº§ç”Ÿè¾¹ç•Œæ•ˆåº”ï¼Œä»–ä»¬ä»…ä»…æ˜¯ç¼–è¯‘ï¼Œè€Œä¸æ˜¯å®šä¹‰chunkæˆä¸ºè‡ªå·±å†…éƒ¨çš„ä¸€ä¸ªåŒ¿åå‡½æ•°ï¼›
+--require å‡½æ•°åŠ è½½ä¸€ä¸ªæ¨¡å—æ—¶ï¼Œåœ¨è¡¨package.loadedä¸­æŸ¥æ‰¾æ˜¯å¦å­˜åœ¨ï¼Œæœ‰çš„è¯å°±è¿”å›è¯¥å€¼ï¼›
+--loadfileä¼šå°†æ–‡ä»¶å½“ä½œå‡½æ•°æ¥åŠ è½½ï¼Œrequireä¼šå°†æ¨¡å—åä½œä¸ºå‚æ•°ä¼ ç»™è¯¥å‡½æ•°ã€‚è‹¥æœ‰è¿”å›å€¼åˆ™å°†è¿”å›å€¼æ”¾å…¥è¡¨package.loadedä¸­ã€‚è‹¥æ²¡æœ‰åˆ™è¿”å›è¡¨package.loadedä¸­çš„å€¼ã€‚
+--module å‡½æ•°ï¼š
+
+--[[
+
+local p = "D:/Cache/LuaTest/Usu/"
+local m_package_path = package.path
+package.path = string.format("%s;%s?.lua;%s/LuaS.lua",  m_package_path, p, p)
+
+--print(package.path) -->luaæ–‡ä»¶çš„æœç´¢è·¯å¾„
+
+
+module "mymodule"
+local modname = "mymodule"  --å®šä¹‰æ¨¡å—å
+local M = {}                  --å®šä¹‰ç”¨äºè¿”å›çš„æ¨¡å—è¡¨
+_G[modname] = M               --å°†æ¨¡å—è¡¨åŠ å…¥åˆ°å…¨å±€å˜é‡ä¸­
+package.loaded[modname] = M  --å°†æ¨¡å—è¡¨åŠ å…¥åˆ°package.loadedä¸­ï¼Œé˜²æ­¢å¤šæ¬¡åŠ è½½
+setfenv(1,M)                  --å°†æ¨¡å—è¡¨è®¾ç½®ä¸ºå‡½æ•°çš„ç¯å¢ƒè¡¨ï¼Œè¿™ä½¿å¾—æ¨¡å—ä¸­æ‰€æœ‰æ“ä½œæ˜¯ä»¥åœ¨æ¨¡å—è¡¨ä¸­ï¼Œå®šä¹‰å‡½æ•°å°±ç›´æ¥å®šä¹‰åœ¨æ¨¡å—è¡¨ä¸­
+
+--]]
+
+
+-------------------------åŠ è½½ æ–‡ä»¶ æ¨¡å— å­—ç¬¦ä¸² require dofie loadfile  loadstring load module ---------------------------
 
 --[[
 do
---mod.lua ±»¼ÓÔØÄ£¿é   ·µ»ØM±í
+--mod.lua è¢«åŠ è½½æ¨¡å—   è¿”å›Mè¡¨
 
 
 local M = {}
@@ -179,12 +328,12 @@ end
 
 
 --[[
---¼ÓÔØº¯Êı mod.lua (Í¬Ä¿Â¼)
+--åŠ è½½å‡½æ•° mod.lua (åŒç›®å½•)
 
-require('mod').sayHello()  -- require Only Once ÔËĞĞÎÄ¼şmod.lua  --return M{}
-dofile('mod.lua').sayHello()     -- dofile  Once/Again ÔËĞĞ(¶à´Î)ÎÄ¼şmod.lua (º¬ÎÄ¼şÃû) --return M{}
+require('mod').sayHello()  -- require Only Once è¿è¡Œæ–‡ä»¶mod.lua  --return M{}
+dofile('mod.lua').sayHello()     -- dofile  Once/Again è¿è¡Œ(å¤šæ¬¡)æ–‡ä»¶mod.lua (å«æ–‡ä»¶å) --return M{}
 loadfile('mod.lua') ().sayHello()  --load & Not Run
-loadstring('print(343)') ()  --·µ»ØÒ»¸öº¯Êı
+loadstring('print(343)') ()  --è¿”å›ä¸€ä¸ªå‡½æ•°
 
 --]]
 
@@ -192,13 +341,13 @@ loadstring('print(343)') ()  --·µ»ØÒ»¸öº¯Êı
 --[[
 do
 -- BeRequired.lua
-print(" require ÓÃ·¨ ÊµÀı ")
+print(" require ç”¨æ³• å®ä¾‹ ")
 
---Ë½ÓĞº¯Êı
+--ç§æœ‰å‡½æ•°
 local function myPrivateFunction()
   print("this is a private function!")
 end
---¹²ÓĞ½Ó¿Ú
+--å…±æœ‰æ¥å£
 function Vprint()
   myPrivateFunction()
   print("this is a public function!")
@@ -207,7 +356,7 @@ function Vprint()
 
 end
 Vprint()
---±êÊ¶ÀàÃû ´´½¨Ò»¸öÀà
+--æ ‡è¯†ç±»å åˆ›å»ºä¸€ä¸ªç±»
 complex = {Vprint = Vprint}
 
 end
@@ -216,12 +365,12 @@ end
 --[[
 do
 -- main.lua
-print(" require ÓÃ·¨ ÊµÀı ")
+print(" require ç”¨æ³• å®ä¾‹ ")
 
-package.path = package.path .. ";?.lua"     --Ä£°åÊ½µÄÂ·¾¶ ?µÄµØ·½ÓÉrequireº¯ÊıÖĞ»ñµÃ
+package.path = package.path .. ";?.lua"     --æ¨¡æ¿å¼çš„è·¯å¾„ ?çš„åœ°æ–¹ç”±requireå‡½æ•°ä¸­è·å¾—
 print(package.path)
 
-local requiredpackage = require("BeRequired")  --ÕâĞĞÊÇ±ØĞëµÃÒªµÄ¡¡
+local requiredpackage = require("BeRequired")  --è¿™è¡Œæ˜¯å¿…é¡»å¾—è¦çš„ã€€
 
 print(requiredpackage,'\n')
 
@@ -230,100 +379,78 @@ print("main print!",'\n')
 end
 Vprint()  -- main print
 
-local requirecomplex = {}  --ÉùÃ÷Ò»¸ö¶ÔÏó
-requirecomplex = complex  --´´½¨¸Ã¶ÔÏó
-requirecomplex.Vprint()  --requireÖĞ¶ÔÏó
+local requirecomplex = {}  --å£°æ˜ä¸€ä¸ªå¯¹è±¡
+requirecomplex = complex  --åˆ›å»ºè¯¥å¯¹è±¡
+requirecomplex.Vprint()  --requireä¸­å¯¹è±¡
 
 end
 --]]
 
 
 
-----------------------------------------Ê±¼äÓëÈÕÆÚ Time/Date--------------------
 
---[[
-do           --  clunk
-
-print(os.time{year=1971, month=1, day=1, hour=0})                   -->31507200  ¹¹ÔìÊ±¼ä
-print(os.time{year=1971, month=1, day=1, hour=0, sec=1})            -->31507201  ¹¹ÔìÊ±¼ä
-print(os.time{year=1971, month=1, day=1, hour=0, minute=1, sec=1})  -->31510801  ¹¹ÔìÊ±¼ä
-print(os.time{year=1970, month=1, day=1})                           -->14400  ÆğÊ¼Ê±¼ä 1970.01.01
-
-print(os.time() );                        -->1403084206  ¿Õ²ÎÊı:Ä¬ÈÏ±¾»úÏµÍ³Ê±¼ä(ÀÛ¼ÆÃëÊı Ê¼1970.01.01)
-print(os.date("%c",os.time() ) );        -->06/18/14 17:36:46  dateÈÕÆÚÊ±¼ä¸ñÊ½Êä³ö timeÃëÊı ·´º¯Êı
-print(os.date("%Y%m%d %X",os.time() ) ); -->20140618 17:46:41
---  %a-weekday:Wed  %A-weekday:Wednesday  %b-month:Sep  %B-month:September  %c-date&time:09/16/9823:48:10
---  %d-day:01-31  %H-hour24:00-23  %I-hour12:01-12  %M-minute:00-59  %m-month:00-12  %p-am\pm:pm  %S-second:00-61
---  %w-weekday:0-6  %x-date:09/16/98  %X-time:23:48:10  %Y-year4:1998  %y-year2:00-99  %%-%
-
-for k,v in pairs(os.date("*t",os.time())) do   	print(k,v); end
- --> Ò»Î¬±í¸ñ  [hour]=17,[min]=36,[wday]=4,[day]=18,[month]=6,[year]=2014,[sec]=46,[yday]=169,[isdst]=FALSE
-
-end
---]]
-
----------------------------------------------------×Ö·û´® string--------------------------------------------
+---------------------------------------------------å­—ç¬¦ä¸² string--------------------------------------------
 
 --[=[
 
 
---×Ö·û´®¸ñÊ½»¯ format
--- Ê®½øÖÆ'd'£»Ê®Áù½øÖÆ'x'£»°Ë½øÖÆ'o'£»¸¡µãÊı'f'£»×Ö·û´®'s'
-print( string.format("%%c:%c",83) )      -->S%c:Êı×Ö×ªASCII×Ö·û
-print( string.format("%+d",17.0) )       -->+17%d:Êı×Ö×ª·ûºÅÕûÊı
+--å­—ç¬¦ä¸²æ ¼å¼åŒ– format
+-- åè¿›åˆ¶'d'ï¼›åå…­è¿›åˆ¶'x'ï¼›å…«è¿›åˆ¶'o'ï¼›æµ®ç‚¹æ•°'f'ï¼›å­—ç¬¦ä¸²'s'
+print( string.format("%%c:%c",83) )      -->S%c:æ•°å­—è½¬ASCIIå­—ç¬¦
+print( string.format("%+d",17.0) )       -->+17%d:æ•°å­—è½¬ç¬¦å·æ•´æ•°
 print( string.format("%05d",17) )        -->00017
-print( string.format("%o",17) )          -->21%o:Êı×Ö×ª8½øÖÆ
-print( string.format("%u",3.14) )        -->3%u:Êı×Ö×ªÎŞ·ûºÅÕûÊı
-print( string.format("%x",13) )          -->d%x,%X(´óĞ´) Êı×Ö×ª16½øÖÆ
-print( string.format("%e",1000) )        -->1.000000e+03%e,%E(´óĞ´) Êı×Ö×ª¿ÆÑ§¼ÇÂ¼·¨
-print( string.format("%6.3f",13) )       -->13.000%f,Êı×Ö×ª¸¡µã
-print( string.format("%q","One\nTwo") )  -->"One \n Two"%g,%GÊı×Ö×ª¶Ì¸ñÊ½
-print( string.format("%s","monkey") )    -->monkey%s, ×Ö·û´®¸ñÊ½
+print( string.format("%o",17) )          -->21%o:æ•°å­—è½¬8è¿›åˆ¶
+print( string.format("%u",3.14) )        -->3%u:æ•°å­—è½¬æ— ç¬¦å·æ•´æ•°
+print( string.format("%x",13) )          -->d%x,%X(å¤§å†™) æ•°å­—è½¬16è¿›åˆ¶
+print( string.format("%e",1000) )        -->1.000000e+03%e,%E(å¤§å†™) æ•°å­—è½¬ç§‘å­¦è®°å½•æ³•
+print( string.format("%6.3f",13) )       -->13.000%f,æ•°å­—è½¬æµ®ç‚¹
+print( string.format("%q","One\nTwo") )  -->"One \n Two"%g,%Gæ•°å­—è½¬çŸ­æ ¼å¼
+print( string.format("%s","monkey") )    -->monkey%s, å­—ç¬¦ä¸²æ ¼å¼
 print( string.format("%10s","monkey") )  -->monkey
 print( string.format("%5.3s","monkey") ) -->mon
 
-print( string.byte("[in brackets]", 2) ) -->105  byte(string [,pos]) µÚpos¸ö×Ö·ûµÄÕûÊı±íÊ¾ĞÎÊ½(ASCIIÂë).ÈçiÎª105.Í¬ÑùposÎª¸ºÊÇµ¹×ÅÊı£»
-print( string.char(97,105) ) -->ai  char(i1,i2...):i1,i2ÎªÕûĞÍ,½«i1,i2..µÈ×ª»¯Îª¶ÔÓ¦µÄ×Ö·ûÈ»ºóÁ¬½Ó³É×Ö·û´®,²¢·µ»Ø.Èçi1=97Ôò·µ»Øa£»
-print( string.len("Hello World") )    -->11           ×Ö·û´®sµÄ³¤¶È£»
-print( string.rep("a", 2^10) )        -->1Kb ×Ö·û´®   ÖØ¸´n´Î×Ö·û´®sµÄ´®
-print( string.lower("Hello World") )  -->hello world  Ğ¡Ğ´
-print( string.upper("Hello World") )  -->HELLO WORLD  ´óĞ´
-print( string.reverse("Hello World")) -->dlroW olleH  µ¹Ğò
---table.sort(a, function (a, b) return string.lower(a) < string.lower(b) end) --Êı×éÅÅĞò: ´óĞ¡Ğ´ÎŞ¹Ø
-print( string.sub("[in brackets]", 2, -2) ) --> in brackets sub(s,i,[j]) ½ØÈ¡sµÄ´Óiµ½j´®, -i±íÊ¾µ¹ÊıµÚ¼¸Î», [j]Ä¬ÈÏ-1
+print( string.byte("[in brackets]", 2) ) -->105  byte(string [,pos]) ç¬¬posä¸ªå­—ç¬¦çš„æ•´æ•°è¡¨ç¤ºå½¢å¼(ASCIIç ).å¦‚iä¸º105.åŒæ ·posä¸ºè´Ÿæ˜¯å€’ç€æ•°ï¼›
+print( string.char(97,105) ) -->ai  char(i1,i2...):i1,i2ä¸ºæ•´å‹,å°†i1,i2..ç­‰è½¬åŒ–ä¸ºå¯¹åº”çš„å­—ç¬¦ç„¶åè¿æ¥æˆå­—ç¬¦ä¸²,å¹¶è¿”å›.å¦‚i1=97åˆ™è¿”å›aï¼›
+print( string.len("Hello World") )    -->11           å­—ç¬¦ä¸²sçš„é•¿åº¦ï¼›
+print( string.rep("a", 2^10) )        -->1Kb å­—ç¬¦ä¸²   é‡å¤næ¬¡å­—ç¬¦ä¸²sçš„ä¸²
+print( string.lower("Hello World") )  -->hello world  å°å†™
+print( string.upper("Hello World") )  -->HELLO WORLD  å¤§å†™
+print( string.reverse("Hello World")) -->dlroW olleH  å€’åº
+--table.sort(a, function (a, b) return string.lower(a) < string.lower(b) end) --æ•°ç»„æ’åº: å¤§å°å†™æ— å…³
+print( string.sub("[in brackets]", 2, -2) ) --> in brackets sub(s,i,[j]) æˆªå–sçš„ä»iåˆ°jä¸², -iè¡¨ç¤ºå€’æ•°ç¬¬å‡ ä½, [j]é»˜è®¤-1
 
 print( string.gsub("Lua is cute", "cute", "great") )   --> Lua is great
---string.gsub("Ô­×Ö·û´®", "ÒªÕÒµÄ×Ö·û´®", "Ï£ÍûÌæ»»³ÉµÄ×Ö·û´®", [nÌæ»»´ÎÊı])²»Ğ´Ìæ»»´ÎÊıµÄÇé¿öÏÂ»áÈ«²¿Ìæ»»
---»ùÓÚÄ£Ê½Æ¥Åä: ·µ»ØÁ½¸öÖµ ¡ª¡ª Ìæ»»ºóµÄ×Ö·û´®ºÍÌæ»»Ö´ĞĞ´ÎÊı
+--string.gsub("åŸå­—ç¬¦ä¸²", "è¦æ‰¾çš„å­—ç¬¦ä¸²", "å¸Œæœ›æ›¿æ¢æˆçš„å­—ç¬¦ä¸²", [næ›¿æ¢æ¬¡æ•°])ä¸å†™æ›¿æ¢æ¬¡æ•°çš„æƒ…å†µä¸‹ä¼šå…¨éƒ¨æ›¿æ¢
+--åŸºäºæ¨¡å¼åŒ¹é…: è¿”å›ä¸¤ä¸ªå€¼ -- æ›¿æ¢åçš„å­—ç¬¦ä¸²å’Œæ›¿æ¢æ‰§è¡Œæ¬¡æ•°
 print( string.gsub("all lii", "l", "x") )              --> axx xii
 print( string.gsub("Lua is great", "perl", "tcl") )    --> Lua is great
---print( string.dump(functoin) ) --·µ»Ø¸ø¶¨º¯ÊıµÄ¶ş½øÖÆ±íÊ¾µÄ×Ö·û´®£¬Ö®ºóÔÚÆäÉÏÓ¦ÓÃloadstring·µ»Øº¯ÊıµÄ¿½±´¡£function±ØĞëÊÇ²»´øupvalueµÄLuaº¯Êı£»
+--print( string.dump(functoin) ) --è¿”å›ç»™å®šå‡½æ•°çš„äºŒè¿›åˆ¶è¡¨ç¤ºçš„å­—ç¬¦ä¸²ï¼Œä¹‹ååœ¨å…¶ä¸Šåº”ç”¨loadstringè¿”å›å‡½æ•°çš„æ‹·è´ã€‚functionå¿…é¡»æ˜¯ä¸å¸¦upvalueçš„Luaå‡½æ•°ï¼›
 --function test()  print("just a test") end ; local sd = string.dump(test) ; local ls = loadstring(sd) ; ls() ;
 
 print( string.find("hello world", "hello") )                             --> 1    5
-print( string.sub("hello world", string.find("hello world", "hello"))) --> hello ×ÅÖØÔÚ×Ö·û´®ÀïÕÒÍêÈ«Ò»ÑùµÄ×Ó×Ö·û´®
-print(string.find("hello world", "lll") )      --> nil  plain:true ½«¹Ø±ÕÑùÊ½¼òµ¥Æ¥ÅäÄ£Ê½,±äÎªÎŞ¸ñÊ½Æ¥Åä
---string.find("Ô­×Ö·û´®", "ÒªÕÒµÄ×Ö·û´®", [nÆğÊ¼Î»ÖÃ(Ö§³Ö¸ºË÷Òı) [,plain] ]) ·µ»ØÁ½¸öÖµ: ÆğÊ¼Ë÷ÒıºÍ½áÎ²Ë÷Òı
+print( string.sub("hello world", string.find("hello world", "hello"))) --> hello ç€é‡åœ¨å­—ç¬¦ä¸²é‡Œæ‰¾å®Œå…¨ä¸€æ ·çš„å­å­—ç¬¦ä¸²
+print(string.find("hello world", "lll") )      --> nil  plain:true å°†å…³é—­æ ·å¼ç®€å•åŒ¹é…æ¨¡å¼,å˜ä¸ºæ— æ ¼å¼åŒ¹é…
+--string.find("åŸå­—ç¬¦ä¸²", "è¦æ‰¾çš„å­—ç¬¦ä¸²", [nèµ·å§‹ä½ç½®(æ”¯æŒè´Ÿç´¢å¼•) [,plain] ]) è¿”å›ä¸¤ä¸ªå€¼: èµ·å§‹ç´¢å¼•å’Œç»“å°¾ç´¢å¼•
 
-print( string.match("My birthday is 8/4/1991!", "%d+/%d+/%d+") )  -->8/4/1991  »ùÓÚÄ£Ê½Æ¥Åä:ÔÚ×Ö·û´®dateÖĞÕÒ³öÌØ¶¨¸ñÊ½µÄĞÅÏ¢
---string.math("Ô­×Ö·û´®", "ÒªÕÒµÄ×Ö·û´®")£¬Ò²ÊÇÔÚ×Ö·û´®ÖĞËÑË÷£¬µ«ÊÇ×¢ÖØµÄÊÇÄ£Ê½Æ¥ÅäµÄÄÇ²¿·Ö×Ó×Ö·û´®
+print( string.match("My birthday is 8/4/1991!", "%d+/%d+/%d+") )  -->8/4/1991  åŸºäºæ¨¡å¼åŒ¹é…:åœ¨å­—ç¬¦ä¸²dateä¸­æ‰¾å‡ºç‰¹å®šæ ¼å¼çš„ä¿¡æ¯
+--string.math("åŸå­—ç¬¦ä¸²", "è¦æ‰¾çš„å­—ç¬¦ä¸²")ï¼Œä¹Ÿæ˜¯åœ¨å­—ç¬¦ä¸²ä¸­æœç´¢ï¼Œä½†æ˜¯æ³¨é‡çš„æ˜¯æ¨¡å¼åŒ¹é…çš„é‚£éƒ¨åˆ†å­å­—ç¬¦ä¸²
 
 
---Ä£Ê½Æ¥Åä
--- .ÈÎÒâ×Ö·û    %a×ÖÄ¸    %c¿ØÖÆ×Ö·û    %dÊı×Ö    %lĞ¡Ğ´×ÖÄ¸    %p±êµã×Ö·û    %s¿Õ°×·û    %u´óĞ´×ÖÄ¸    %w×ÖÄ¸ºÍÊı×Ö    %xÊ®Áù½øÖÆÊı×Ö    %z´ú±í0µÄ×Ö·û
--- +1´Î»ò¶à´Î *0´Î»ò¶à´Î -0´Î»ò¶à´Î(×î¶ÌÆ¥Åä) ?0´Î»ò1´Î   Ãªµã^ÆğÊ¼´¦, Ãªµã$½áÊø´¦. ÀıÈç^MYADDON:.+±íÊ¾ÒÔMYADDON:¿ªÍ·µÄ×Ö·û´®
--- ÌØÊâ×Ö·û ( ) . % + - * ? [ ^ $   '%' ×ªÒå×Ö·û  '%.' Æ¥Åäµã  '%%' Æ¥Åä×Ö·û '%'
+--æ¨¡å¼åŒ¹é…
+-- .ä»»æ„å­—ç¬¦    %aå­—æ¯    %cæ§åˆ¶å­—ç¬¦    %dæ•°å­—    %lå°å†™å­—æ¯    %pæ ‡ç‚¹å­—ç¬¦    %sç©ºç™½ç¬¦    %uå¤§å†™å­—æ¯    %wå­—æ¯å’Œæ•°å­—    %xåå…­è¿›åˆ¶æ•°å­—    %zä»£è¡¨0çš„å­—ç¬¦
+-- +1æ¬¡æˆ–å¤šæ¬¡ *0æ¬¡æˆ–å¤šæ¬¡ -0æ¬¡æˆ–å¤šæ¬¡(æœ€çŸ­åŒ¹é…) ?0æ¬¡æˆ–1æ¬¡   é”šç‚¹^èµ·å§‹å¤„, é”šç‚¹$ç»“æŸå¤„. ä¾‹å¦‚^MYADDON:.+è¡¨ç¤ºä»¥MYADDON:å¼€å¤´çš„å­—ç¬¦ä¸²
+-- ç‰¹æ®Šå­—ç¬¦ ( ) . % + - * ? [ ^ $   '%' è½¬ä¹‰å­—ç¬¦  '%.' åŒ¹é…ç‚¹  '%%' åŒ¹é…å­—ç¬¦ '%'
 
---string.gmatch(str, pattern): ·µ»Øµü´úÆ÷º¯Êı
---[[ ÏÔÊ¾Ã¿¸öµ¥´Ê
+--string.gmatch(str, pattern): è¿”å›è¿­ä»£å™¨å‡½æ•°
+--[[ æ˜¾ç¤ºæ¯ä¸ªå•è¯
 s = "hello world from Lua"
 local tbWords = {}
 for w in string.gmatch(s, "%a+") do tbWords[#tbWords + 1] = w  end
 for _, val in pairs(tbWords) do  print(val) end
 --]]
 
---string.gfind(s,pat):ÔÚ×Ö·û´®sÖĞ²éÕÒÆ¥ÅäÕıÔòpatµÄ×Ó×Ö·û´®
---[[  ÊÕ¼¯Ò»¸ö×Ö·û´®ÖĞËùÓĞµÄµ¥´Ê£¬È»ºó²åÈëµ½Ò»¸ö±íÖĞ
+--string.gfind(s,pat):åœ¨å­—ç¬¦ä¸²sä¸­æŸ¥æ‰¾åŒ¹é…æ­£åˆ™patçš„å­å­—ç¬¦ä¸²
+--[[  æ”¶é›†ä¸€ä¸ªå­—ç¬¦ä¸²ä¸­æ‰€æœ‰çš„å•è¯ï¼Œç„¶åæ’å…¥åˆ°ä¸€ä¸ªè¡¨ä¸­
 local words = {}
 local s="hello hi, again!";
 for w in string.gfind(s, "%a") do
@@ -332,7 +459,7 @@ end
 --]]
 
 
-----------------string splitº¯Êı ------------------------------------
+----------------string splitå‡½æ•° ------------------------------------
 --[[
 function Split(szFullString, szSeparator)
 local nFindStartIndex = 1
@@ -350,7 +477,7 @@ while true do
 end
 return nSplitArray
 end
---²âÊÔ
+--æµ‹è¯•
 local str = "1234,389,abc";
 local list = Split(str, ",");
 for i = 1, #list
@@ -367,28 +494,28 @@ string.split = function(s, p)
 end
 
 
---Ê¹ÓÃÀı×ÓÒ»
+--ä½¿ç”¨ä¾‹å­ä¸€
 local str = 'abc,123,hello,ok'
 local list = string.split(str, ',')
-for _, s in ipairs(list£© do
+for _, s in ipairs(listï¼‰ do
     print(s)
 end
 
---½á¹û£º
+--ç»“æœï¼š
 abc
 123
 hello
 ok
 
 
---Ê¹ÓÃÀı×Ó¶ş
+--ä½¿ç”¨ä¾‹å­äºŒ
 local str = 'abc \n123 \t hello ok'
 local list = string.split(str, '%s')
-for _, s in ipairs(list£© do
+for _, s in ipairs(listï¼‰ do
     print(s)
 end
 
---½á¹û£º
+--ç»“æœï¼š
 --abc
 --123
 --hello
@@ -405,15 +532,15 @@ end
 
 
 
--------------------------------------------ÎÄ¼ş¶Á´æ-------------------------------------
+-------------------------------------------æ–‡ä»¶è¯»å­˜/è¾“å‡º-------------------------------------
 
 --[[
 do
--- ËÆºõ²»Ö§³Ö´óÎÄ¼ş(²»ÄÜ³¬¹ı9k?)
+-- ä¼¼ä¹ä¸æ”¯æŒå¤§æ–‡ä»¶(ä¸èƒ½è¶…è¿‡9k?)
 function FileSaveLoad()
       local file = io.open("c:\\in.lua", "r");
       assert(file);
-      local data = file:read("*a"); -- ¶ÁÈ¡ËùÓĞÄÚÈİ
+      local data = file:read("*a"); -- è¯»å–æ‰€æœ‰å†…å®¹
       file:close();
       file = io.open("c:\\out.lua", "w");
       assert(file);
@@ -422,7 +549,296 @@ function FileSaveLoad()
 end
 FileSaveLoad();
 
--------------------------------·ÇÑ­»·±í¸ñ´¦Àí----------------------------------------------
+-------
+
+
+tb01= {
+    [1] = "bbbbbb";
+    [2] = "ffffff";
+    [3] = "cccccc";
+    [4] = "xxxxxx";
+    [5] = "eeeeee";
+};
+
+
+local f = assert(io.open("d:\\test20140721.txt", "a+"));
+
+f:write(os.date("%Y%m%d %X",os.time()).."\n")
+
+for v,k in pairs(tb01) do
+
+--	print(v,'  \t',k)
+f:write(v..' '..k..'\n')
+
+end
+
+f:close()
+
+
+local file = assert(io.open("d:\\test20140721.txt","r"));
+for line in file:lines() do
+ print(line)
+end
+file:close()
+
+
+--------
+
+
+local filePath = "D:\\1.txt"
+function readFile(file)
+    assert(file,"file open failed")
+    local fileTab = {}
+    local line = file:read()
+    while line do
+        print("get line",line)
+        table.insert(fileTab,line)
+        line = file:read()
+    end
+    return fileTab
+end
+
+function writeFile(file,fileTab)
+    assert(file,"file open failed")
+    for i,line in ipairs(fileTab) do
+        print("write ",line)
+        file:write(line)
+        file:write("\n")
+    end
+end
+
+function main()
+    print("start")
+    local fileRead = io.open(filePath)
+    if fileRead then
+        local tab = readFile(fileRead)
+        fileRead:close()
+        table.remove(tab,1)
+        local fileWrite = io.open(filePath,"w")
+        if fileWrite then
+            writeFile(fileWrite,tab)
+            fileWrite:close()
+        end
+    end
+end
+
+main()
+
+--------
+
+require('luacom')
+--æ–°å»ºExcelæ–‡ä»¶
+function _ExcelBookNew(Visible)
+local oExcel = luacom.CreateObject("Excel.Application")
+if oExcel == nil then error("Object is not create") end
+--å¤„ç†æ˜¯å¦å¯è§
+if tonumber(Visible) == nil then error("Visible is not a number") end
+if Visible == nil then Visible = 1 end
+if Visible > 1 then Visible = 1 end
+if Visible < 0 then Visible = 0 end
+
+oExcel.Visible = Visible
+oExcel.WorkBooks:Add()
+oExcel.ActiveWorkbook.Sheets(1):Select()
+return oExcel
+end
+--æ‰“å¼€å·²æœ‰çš„Excelæ–‡ä»¶
+function _ExcelBookOpen(FilePath,Visible,ReadOnly)
+local oExcel = luacom.CreateObject("Excel.Application")
+if oExcel == nil then error("Object is not create") end
+--æŸ¥çœ‹æ–‡ä»¶æ˜¯å¦å­˜åœ¨
+local t=io.open(FilePath,"r")
+if t == nil then
+--æ–‡ä»¶ä¸å­˜åœ¨æ—¶çš„å¤„ç†
+oExcel.Application:quit()
+oExcel=nil
+error("File is not exists")
+else
+t:close()
+end
+--å¤„ç†æ˜¯å¦å¯è§ReadOnly
+if Visible == nil then Visible = 1 end
+if tonumber(Visible) == nil then error("Visible is not a number") end
+if Visible > 1 then Visible = 1 end
+if Visible < 0 then Visible = 0 end
+--å¤„ç†æ˜¯å¦åªè¯»
+if ReadOnly == nil then ReadOnly = 0 end
+if tonumber(ReadOnly) == nil then error("ReadOnly is not a number") end
+if ReadOnly > 1 then ReadOnly = 1 end
+if ReadOnly < 0 then ReadOnly = 0 end
+oExcel.Visible = Visible
+--æ‰“å¼€æŒ‡å®šæ–‡ä»¶
+oExcel.WorkBooks:Open(FilePath,nil,ReadOnly)
+oExcel.ActiveWorkbook.Sheets(1):Select()
+return oExcel
+end
+--å†™å…¥Cellsæ•°æ®
+function _ExcelWriteCell(oExcel,Value,Row,Column)
+--éªŒè¯å‚æ•°
+if oExcel == nil then error("oExcel is not a object!") end
+if tonumber(Row) == nil or Row < 1 then error("Row is not a valid number!") end
+if tonumber(Column) == nil or Column < 1 then error("Column is not a valid number!") end
+--å¯¹æŒ‡å®šCellä½ç½®èµ‹å€¼
+oExcel.Activesheet.Cells(Row, Column).Value2 = Value
+return 1
+end
+--è¯»å–Cellsæ•°æ®
+function _ExcelReadCell(oExcel,Row,Column)
+--éªŒè¯å‚æ•°
+if oExcel == nil then error("oExcel is not a object!") end
+if tonumber(Row) == nil or Row < 1 then error("Row is not a valid number!") end
+if tonumber(Column) == nil or Column < 1 then error("returnColumn is not a valid number!") end
+--è¿”å›æŒ‡å®šCellä½ç½®å€¼
+return oExcel.Activesheet.Cells(Row, Column).Value2
+end
+--ä¿å­˜Excelæ–‡ä»¶
+function _ExcelBookSave(oExcel, Alerts)
+--éªŒè¯å‚æ•°
+if oExcel == nil then error("oExcel is not a object!") end
+--å¤„ç†æ˜¯å¦æç¤º
+if Alerts == nil then Alerts = 0 end
+if tonumber(Alerts) == nil then error("Alerts is not a number") end
+if Alerts > 1 then Alerts = 1 end
+if Alerts < 0 then Alerts = 0 end
+oExcel.Application.DisplayAlerts = Alerts
+oExcel.Application.ScreenUpdating = Alerts
+--è¿›è¡Œä¿å­˜
+oExcel.ActiveWorkBook:Save()
+if not Alerts then
+oExcel.Application.DisplayAlerts = 1
+oExcel.Application.ScreenUpdating = 1
+end
+return 1
+end
+--å¦å­˜Excelæ–‡ä»¶
+function _ExcelBookSaveAs(oExcel,FilePath,Type,Alerts,OverWrite)
+--éªŒè¯å‚æ•°
+if oExcel == nil then error("oExcel is not a object!") end
+--å¤„ç†ä¿å­˜æ–‡ä»¶ç±»å‹
+if Type == nil then Type = "xls" end
+if Type == "xls" or Type == "csv" or Type == "txt" or Type == "template" or Type == "html" then
+if Type == "xls" then Type = -4143 end -- xlWorkbookNormal
+if Type == "csv" then Type = 6 end -- xlCSV
+if Type == "txt" then Type = -4158 end -- xlCurrentPlatformText
+if Type == "template" then Type = 17 end -- xlTemplate
+if Type == "html" then Type = 44 end -- xlHtml
+else
+error("Type is not a valid type")
+end
+--å¤„ç†æ˜¯å¦æç¤º
+if Alerts == nil then Alerts = 0 end
+if tonumber(Alerts) == nil then error("Alerts is not a number") end
+if Alerts > 1 then Alerts = 1 end
+if Alerts < 0 then Alerts = 0 end
+oExcel.Application.DisplayAlerts = Alerts
+oExcel.Application.ScreenUpdating = Alerts
+--å¤„ç†æ–‡ä»¶æ˜¯å¦OverWrite
+if OverWrite == nil then OverWrite = 0 end
+--æŸ¥çœ‹æ–‡ä»¶æ˜¯å¦å­˜åœ¨
+local t=io.open(FilePath,"r")
+--å¦‚æœæ–‡ä»¶å­˜åœ¨ä¸”OverWriteå‚æ•°ä¸º0ï¼Œè¿”å›é”™è¯¯
+if not t == nil then
+if not OverWrite then
+t:close()
+error("Can't overwrite the file!")
+end
+t:close()
+os.remove(FilePath)
+end
+--ä¿å­˜æ–‡ä»¶
+if FilePath == nil then error("FilePath is not valid !") end
+--ä½¿ç”¨ActiveWorkBookæ—¶ï¼Œåœ¨å·²ç»æ‰“å¼€æ–‡ä»¶æ—¶ï¼Œæ— æ³•å¦å­˜ï¼Œæ‰€ä»¥ä½¿ç”¨WorkBookS(1)è¿›è¡Œå¤„ç†
+oExcel.WorkBookS(1):SaveAs(FilePath,Type)
+--ç»§ç»­å¤„ç†Alertså‚æ•°ï¼Œä»¥ä¾¿ç»§ç»­ä½¿ç”¨
+if not Alerts then
+oExcel.Application.DisplayAlerts = 1
+oExcel.Application.ScreenUpdating = 1
+end
+return 1
+end
+--å…³é—­Excelæ–‡ä»¶
+function _ExcelBookClose(oExcel,Save,Alerts)
+--éªŒè¯å‚æ•°
+if oExcel == nil then error("oExcel is not a object!") end
+--å¤„ç†æ˜¯å¦ä¿å­˜
+if Save == nil then Save = 1 end
+if tonumber(Save) == nil then error("Save is not a number") end
+if Save > 1 then Save = 1 end
+if Save < 0 then Save = 0 end
+--å¤„ç†æ˜¯å¦æç¤º
+if Alerts == nil then Alerts = 0 end
+if tonumber(Alerts) == nil then error("Alerts is not a number") end
+if Alerts > 1 then Alerts = 1 end
+if Alerts < 0 then Alerts = 0 end
+
+if Save == 1 then oExcel.ActiveWorkBook:save() end
+oExcel.Application.DisplayAlerts = Alerts
+oExcel.Application.ScreenUpdating = Alerts
+oExcel.Application:Quit()
+return 1
+end
+--åˆ—å‡ºæ‰€æœ‰Sheet
+function _ExcelSheetList(oExcel)
+--éªŒè¯å‚æ•°
+if oExcel == nil then error("oExcel is not a object!") end
+local temp = oExcel.ActiveWorkbook.Sheets.Count
+local tab = {}
+tab[0] = temp
+for i = 1,temp do
+tab[i] = oExcel.ActiveWorkbook.Sheets(i).Name
+end
+--è¿”å›ä¸€ä¸ªtableï¼Œå…¶ä¸­tab[0]ä¸ºä¸ªæ•°
+return tab
+end
+--æ¿€æ´»æŒ‡å®šçš„sheet
+function _ExcelSheetActivate(oExcel, vSheet)
+local tab = {}
+local found = 0
+--éªŒè¯å‚æ•°
+if oExcel == nil then error("oExcel is not a object!") end
+--è®¾ç½®é»˜è®¤sheetä¸º1
+if vSheet == nil then vSheet = 1 end
+--å¦‚æœæä¾›å‚æ•°ä¸ºæ•°å­—
+if tonumber(vSheet) ~= nil then
+if oExcel.ActiveWorkbook.Sheets.Count < tonumber(vSheet) then error("The sheet value is to biger!") end
+--å¦‚æœæä¾›å‚æ•°ä¸ºå­—ç¬¦
+else
+tab = _ExcelSheetList(oExcel)
+for i = 1 , tab[0] do
+if tab[i] == vSheet then found = 1 end
+end
+if found ~= 1 then error("Can't find the sheet") end
+end
+oExcel.ActiveWorkbook.Sheets(vSheet):Select ()
+return 1
+end
+
+
+--å‚æ•°åŸºæœ¬åšåˆ°äº†å¯ä»¥çœç•¥
+require('Unicode')
+b=assert(_ExcelBookOpen("c://d.xls"))
+assert(_ExcelSheetActivate(b))
+assert(_ExcelWriteCell(b,Unicode.a2u8("å“ˆå“ˆ"),1,1))
+assert(_ExcelBookSave(b,1))
+assert(_ExcelBookClose(b))
+
+b=assert(_ExcelBookNew(1))
+tab=assert(_ExcelSheetList(b))
+for i,v in pairs(tab) do
+print(i,v)
+end
+assert(_ExcelSheetActivate(b,"Sheet2"))
+--b=assert(_ExcelBookOpen("c://d.xls",1,0))
+assert(_ExcelWriteCell(b,"haha",1,1))
+assert(_ExcelBookSaveAs(b,"c://a","txt",0,0))
+print(_ExcelReadCell(b,1,1))
+assert(_ExcelBookClose(b))
+
+
+---------
+
+
+-------------------------------éå¾ªç¯è¡¨æ ¼å¤„ç†----------------------------------------------
 
 
 HERO = 1;
@@ -434,13 +850,13 @@ cha[1] =
 {
       basic =
       {
-      Name = "Å©Ãñ",    --NPCÃû×Ö
-      cha_type = HERO,  --NPCÄ£ĞÍ
+      Name = "å†œæ°‘",    --NPCåå­—
+      cha_type = HERO,  --NPCæ¨¡å‹
       },
       combat =
       {
-       acquire = 600.00,  --Ö÷¶¯¹¥»÷·¶Î§
-       basic_def = 10,   --»ù´¡·ÀÓù
+       acquire = 600.00,  --ä¸»åŠ¨æ”»å‡»èŒƒå›´
+       basic_def = 10,   --åŸºç¡€é˜²å¾¡
       },
 };
 
@@ -452,7 +868,7 @@ function SaveTableContent(file, obj)
       elseif szType == "string" then
             file:write(string.format("%q", obj));
       elseif szType == "table" then
-            --°ÑtableµÄÄÚÈİ¸ñÊ½»¯Ğ´ÈëÎÄ¼ş
+            --æŠŠtableçš„å†…å®¹æ ¼å¼åŒ–å†™å…¥æ–‡ä»¶
             file:write("{\n");
             for i, v in pairs(obj) do
                   file:write("[");
@@ -468,7 +884,7 @@ function SaveTableContent(file, obj)
 end
 
 function SaveTable()
-      local file = io.open("e:\\00_00_00_º£Íâ×é_Ñ§Ï°\\Ğ´Èë.txt", "w");
+      local file = io.open("e:\\00_00_00_æµ·å¤–ç»„_å­¦ä¹ \\å†™å…¥.txt", "w");
       assert(file);
       file:write("cha = {}\n");
       file:write("cha[1] = \n");
@@ -484,7 +900,7 @@ end
 
 --]]
 
-----------------------------------------Ñ­»·¼ÆÊı---------------------------------
+----------------------------------------å¾ªç¯è®¡æ•°---------------------------------
 
 --[[
 do           --  clunk
@@ -513,7 +929,7 @@ print("sum =",sum)
 end
 --]]
 
-------------------------------------------º¯Êı¶¨Òå--------------------------------------
+------------------------------------------å‡½æ•°å®šä¹‰--------------------------------------
 
 --[[
 
@@ -522,12 +938,12 @@ print (pythagorean(30,40));
 
 print (math.randomseed(23));
 
---table º¯Êı±äÁ¿
+--table å‡½æ•°å˜é‡
 a={p=print};    a.p("hi, aTion","\n")
 
 --]]
 
-------------------------------º¯Êı Ç¶Ì×ÒıÓÃ ×Ôµİ¹é ½×³Ë ÃüÁîÊäÈën------------------------------------
+------------------------------å‡½æ•° åµŒå¥—å¼•ç”¨ è‡ªé€’å½’ é˜¶ä¹˜ å‘½ä»¤è¾“å…¥n------------------------------------
 
 --[[
 do
@@ -548,7 +964,7 @@ print(fact(a))
 end
 --]]
 
-----------------------------------------------Ëæ»úÊı------------------------------------
+----------------------------------------------éšæœºæ•°------------------------------------
 
 --[[
 print(math.random(100))
@@ -557,7 +973,7 @@ print(math.random());  print(math.random());  print(math.random());
 print(math.randomseed( tonumber(tostring(os.time()):reverse():sub(1,6)) ))
 --]]
 
-------------------------------------------Ä£Äâµ¼Êı-----------------------------------
+------------------------------------------æ¨¡æ‹Ÿå¯¼æ•°-----------------------------------
 
 --[[
 
@@ -577,14 +993,16 @@ print (math.cos(10),c(10),"\n")
 
 
 
-----------------------------------------------Ã°ºÅ(:)ÓëµãºÅ(.)µÄÇø±ğ--------------------------
+----------------------------------------------å†’å·(:)ä¸ç‚¹å·(.)çš„åŒºåˆ«--------------------------
 
 --[[
 do
 
---1¡¢¶¨ÒåµÄÊ±ºò£ºClass:test()Óë Class.test(self)ÊÇµÈ¼ÛµÄ£¬µãºÅ(.)Òª´ïµ½Ã°ºÅ(:)µÄĞ§¹ûÒª¼ÓÒ»¸öself²ÎÊıµ½µÚÒ»¸ö²ÎÊı£»
---2¡¢µ÷ÓÃµÄÊ±ºò£ºobject:test() Óëobject.test(object)µÈ¼Û£¬µãºÅ(.)ÒªÌí¼Ó¶ÔÏó×ÔÉíµ½µÚÒ»¸ö²ÎÊı¡£
---×Ü½á£º¿ÉÒÔ°ÑµãºÅ(.)×÷Îª¾²Ì¬·½·¨À´¿´´ı£¬Ã°ºÅ(:)×÷Îª³ÉÔ±·½·¨À´¿´´ı¡£
+--ç”¨luaè¿›è¡Œé¢å‘å¯¹è±¡çš„ç¼–ç¨‹,å£°æ˜æ–¹æ³•å’Œè°ƒç”¨æ–¹æ³•ç»Ÿä¸€ç”¨å†’å·,å¯¹äºå±æ€§çš„è°ƒç”¨å…¨éƒ¨ç”¨ç‚¹å·
+
+--1ã€å®šä¹‰çš„æ—¶å€™ï¼šClass:test()ä¸ Class.test(self)æ˜¯ç­‰ä»·çš„ï¼Œç‚¹å·(.)è¦è¾¾åˆ°å†’å·(:)çš„æ•ˆæœè¦åŠ ä¸€ä¸ªselfå‚æ•°åˆ°ç¬¬ä¸€ä¸ªå‚æ•°ï¼›
+--2ã€è°ƒç”¨çš„æ—¶å€™ï¼šobject:test() ä¸object.test(object)ç­‰ä»·ï¼Œç‚¹å·(.)è¦æ·»åŠ å¯¹è±¡è‡ªèº«åˆ°ç¬¬ä¸€ä¸ªå‚æ•°ã€‚
+--æ€»ç»“ï¼šå¯ä»¥æŠŠç‚¹å·(.)ä½œä¸ºé™æ€æ–¹æ³•æ¥çœ‹å¾…ï¼Œå†’å·(:)ä½œä¸ºæˆå‘˜æ–¹æ³•æ¥çœ‹å¾…ã€‚
 
 Class = {}
 Class.__index = Class
@@ -596,12 +1014,12 @@ function Class.new(x,y)
     cls.y = y
     return cls
 end
-function Class:test()   -- Class:test()Óë Class.test(self)ÊÇµÈ¼Û
+function Class:test()   -- Class:test()ä¸ Class.test(self)æ˜¯ç­‰ä»·
     print(self.x,self.y)
 end
 
 object = Class.new(10,20)
-object:test() ;  object.test(object) ;  -- µÈ¼ÛÓÚ
+object:test() ;  object.test(object) ;  -- ç­‰ä»·äº
 
 
 end
@@ -614,9 +1032,9 @@ end
 --[[
 do
 
-print("table ÒıÓÃ ")
+print("table å¼•ç”¨ ")
 
-tt = {"hello", 55};                                      --±íÖĞ¿ÉÒÔ²»Í¬ÀàĞÍ  ÈÎÒâÀàĞÍµÄÖµÀ´×÷Êı×éµÄË÷Òı
+tt = {"hello", 55};                                      --è¡¨ä¸­å¯ä»¥ä¸åŒç±»å‹  ä»»æ„ç±»å‹çš„å€¼æ¥ä½œæ•°ç»„çš„ç´¢å¼•
 
 local function helloWorld()
    print( "Hello World A !" )
@@ -624,14 +1042,14 @@ end
 
 table = { 10 ,[tt] = "table", 29, ["flag"] = 5, key=11,  3.14,  [6]=6e-3 , 40 , 60, [10]="7K", [11]={1,2,3} , func=helloWorld , function() print( "Hello World B !" ); end,  helloWorld  };
 
-print(table.key);     print(table["key"]);    print(table['key']);   print("\n")  --11 µÈ¼ÛË÷Òı
-print(table["flag"]);    print(table.flag);    print(table['flag']);   print("\n")  --5  µÈ¼ÛË÷Òı
+print(table.key);     print(table["key"]);    print(table['key']);   print("\n")  --11 ç­‰ä»·ç´¢å¼•
+print(table["flag"]);    print(table.flag);    print(table['flag']);   print("\n")  --5  ç­‰ä»·ç´¢å¼•
 
-print(table[1]);    print(table[2]);   print(table[3]);  print(table[4]);   print(table[5]);    print(table[6]) ;   print(table[10]) ;  print(table[11]) ;  print(table[11][3]) ;   print("\n");       --·Ç×¢Ë÷Òı ×ÔĞò(ÅÅÇ°)×é³É¾Ö²¿Êı×é 20 ÒÑ×¢Êı×ÖĞòºÅ, Ğë´óÓÚ·Ç×¢Ë÷Òı¸öÊı  ÖµÎªtableÊ±, ·µ»ØµØÖ·
+print(table[1]);    print(table[2]);   print(table[3]);  print(table[4]);   print(table[5]);    print(table[6]) ;   print(table[10]) ;  print(table[11]) ;  print(table[11][3]) ;   print("\n");       --éæ³¨ç´¢å¼• è‡ªåº(æ’å‰)ç»„æˆå±€éƒ¨æ•°ç»„ 20 å·²æ³¨æ•°å­—åºå·, é¡»å¤§äºéæ³¨ç´¢å¼•ä¸ªæ•°  å€¼ä¸ºtableæ—¶, è¿”å›åœ°å€
 
-print(table[tt]);        --table(Ãû)×÷Êı×éµÄË÷Òı
+print(table[tt]);        --table(å)ä½œæ•°ç»„çš„ç´¢å¼•
 
-table.func();  table[6]() ;  table[7]()    -- Hello World!   table functionÒıÓÃ ×¢ÒâÏÂ±ê
+table.func();  table[6]() ;  table[7]()    -- Hello World!   table functionå¼•ç”¨ æ³¨æ„ä¸‹æ ‡
 
 end
 
@@ -639,32 +1057,32 @@ end
 
 
 
---[[
+--[===[
 
------------------------------------------------------Table ²åÈë----------------------------------
+-----------------------------------------------------Table æ’å…¥----------------------------------
 
 local tbl = {"alpha", "beta", "gamma", "delta"}
-table.sort(tbl)   --ÅÅÕıĞò
+table.sort(tbl)   --æ’æ­£åº
 print(table.concat(tbl, ", ")	,"\n") -- alpha, beta, delta, gamma
 print(table.concat(tbl, ": "),"\n")
 print(table.concat(tbl, nil, 1, 2))
 print(table.concat(tbl, "\n", 2, 3))
 
 
-table.insert(tbl, "delta")   --²åÈë
+table.insert(tbl, "delta")   --æ’å…¥
 table.insert(tbl, "epsilon")
 table.insert(tbl, 3, "zeta")
 print(table.concat(tbl, ", ")	,"\n")
 
 
 local tb2 = {[1] = "a", [2] = "b", [3] = "c", [26] = "z"}
-print(#tb2)   -->3   ÒòÎª26ºÍÖ®Ç°µÄÊı×Ö²»Á¬Ğø, ËùÒÔ²»ËãÔÚÊı×é²¿·ÖÄÚ
+print(#tb2)   -->3   å› ä¸º26å’Œä¹‹å‰çš„æ•°å­—ä¸è¿ç»­, æ‰€ä»¥ä¸ç®—åœ¨æ•°ç»„éƒ¨åˆ†å†…
 print(table.maxn(tb2))
 tb2[91.32] = true
 print(table.maxn(tb2))
 
 
------------------------------------------------------Table ¸´ÖÆ----------------------------------
+-----------------------------------------------------Table å¤åˆ¶----------------------------------
 
 function copy_table(ori_tab)
     if type(ori_tab) ~= "table" then
@@ -704,7 +1122,7 @@ end
 
 
 
-print("-----------------table copy ¸´ÖÆ±í--------------")
+print("-----------------table copy å¤åˆ¶è¡¨--------------")
 
 function copytable(table_a)
   local table_b = {}
@@ -732,7 +1150,7 @@ function show_table(b)
 		if type(v) ~= "table" then   print(k,":" , v)
 		else
 			show_table(v)
-	  end
+    end
 	end
 end
 
@@ -744,7 +1162,7 @@ show_table(a);
 
 
 
-----------------------------Table ToString ±í¸ñ×ª×Ö·û---------------------
+----------------------------Table ToString è¡¨æ ¼è½¬å­—ç¬¦---------------------
 
 print("\n","-----------TableToString-----------------");
 
@@ -806,7 +1224,7 @@ print(ati);
 
 
 
-------------------------Tabel ²å±í£¬º¬ĞÂkeyÖµ--------------------------
+------------------------Tabel æ’è¡¨ï¼Œå«æ–°keyå€¼--------------------------
 
 
 function MergeTable(ta,tb)
@@ -824,11 +1242,11 @@ local te={nAge=15,szFaction="ccc"}
 --MergeTable(td,te);
 
 
-------------------------Tabel ²åÊı¾İ£¬ÉèÖÃkeyÖµ--------------------------
+------------------------Tabel æ’æ•°æ®ï¼Œè®¾ç½®keyå€¼--------------------------
 
-local th={"aaa", 25, "²ß»®"}
-local ti={"bbb", 24, "³ÌĞò"}
-local tj={"ccc", 26, "²âÊÔ"}
+local th={"aaa", 25, "ç­–åˆ’"}
+local ti={"bbb", 24, "ç¨‹åº"}
+local tj={"ccc", 26, "æµ‹è¯•"}
 local tk={};
 local tl={};
 
@@ -858,9 +1276,9 @@ for k,v in ipairs(tl) do
 end
 
 
-------------------------Tabel Õû±íÊä³ö ¸ÄĞ´Print--------------------------
+------------------------Tabel æ•´è¡¨è¾“å‡º æ”¹å†™Print--------------------------
 
---Èı²ãtableÇ¶Ì×´òÓ¡
+--ä¸‰å±‚tableåµŒå¥—æ‰“å°
 function Print(var,varName)
 	if varName then print(varName.."={");  else print("{");  end
 	for k,v in pairs (var) do
@@ -989,12 +1407,12 @@ local obj = {
     [9.7] = 22222,
 }
 
-print("\n","----------------Êä³ötable²âÊÔ-------------------","\n");
+print("\n","----------------è¾“å‡ºtableæµ‹è¯•-------------------","\n");
 
 Print(obj);
 
 
-------------------------table µü´ú ±éÀú µİ¹éµ÷ÓÃ---------------------------------------
+------------------------table è¿­ä»£ éå† é€’å½’è°ƒç”¨---------------------------------------
 
 
 table1 = {
@@ -1005,26 +1423,26 @@ table1 = {
     There are
     10 types of pepole
     who can understand binary.
-    ]],--¶àĞĞÎÄ×Ö
+    ]],--å¤šè¡Œæ–‡å­—
     embeddedTab = {
         em1 = xx,
         x =0,
-        {x =1, y =2 } -- ÔÙÄÚÇ¶table
-    }-- ÄÚÇ¶table
+        {x =1, y =2 } -- å†å†…åµŒtable
+    }-- å†…åµŒtable
 }
 
 tab = "    "
 function print_table(t, i)
-    local indent ="" -- iËõ½ø£¬µ±Ç°µ÷ÓÃËõ½ø
+    local indent ="" -- iç¼©è¿›ï¼Œå½“å‰è°ƒç”¨ç¼©è¿›
     for j = 0, i do
         indent = indent .. tab
     end
     for k, v in pairs(t) do
-        if (type(v) == "table") then -- type(v) µ±Ç°ÀàĞÍÊ±·ñtable Èç¹ûÊÇ£¬ÔòĞèÒªµİ¹é£¬
+        if (type(v) == "table") then -- type(v) å½“å‰ç±»å‹æ—¶å¦table å¦‚æœæ˜¯ï¼Œåˆ™éœ€è¦é€’å½’ï¼Œ
             print(indent .. "" .. k .. " is a table ")
-            print_table(v, i + 1) -- µİ¹éµ÷ÓÃ
+            print_table(v, i + 1) -- é€’å½’è°ƒç”¨
             print(indent .. " end table ".. k .. "")
-        else -- ·ñÔòÖ±½ÓÊä³öµ±Ç°Öµ
+        else -- å¦åˆ™ç›´æ¥è¾“å‡ºå½“å‰å€¼
 
             print(indent .. "" .. k .. "=" .. v.."")
         end
@@ -1036,26 +1454,26 @@ print_table(table1, 0)
 
 
 
-print( "-------------------Table(¶à²ãÇ¶Ì×) ¶¨Î» ÒÔvalue ²éÕÒÆäËû value-------------------"  );
+print( "-------------------Table(å¤šå±‚åµŒå¥—) å®šä½ ä»¥value æŸ¥æ‰¾å…¶ä»– value-------------------"  );
 
 
 local tbcd=
 {
  [1] = {
  ["szName"] = "aaa",
- ["szTitle"] = "²ß»®",
+ ["szTitle"] = "ç­–åˆ’",
  ["nAge"] = 25,
 }
 ,
  [2] = {
  ["szName"] = "bbb",
- ["szTitle"] = "³ÌĞò",
+ ["szTitle"] = "ç¨‹åº",
  ["nAge"] = 24,
 }
 ,
  [3] = {
  ["szName"] = "ccc",
- ["szTitle"] = "²âÊÔ",
+ ["szTitle"] = "æµ‹è¯•",
  ["nAge"] = 26,
 }
 ,
@@ -1067,7 +1485,7 @@ local g_t=nil;
 
 for v,k in ipairs(tbcd) do
 	for s,j in pairs(k) do
-		if j=="²âÊÔ" then
+		if j=="æµ‹è¯•" then
 			--print(v,s,j) ;
 			g_t=v;
 		end
@@ -1087,7 +1505,7 @@ print ("-----tbcd[g_t].nAge :-------", tbcd[g_t].nAge);  -->26
 
 
 
------------------------------------------------Table ±éÀú----------------------------------
+-----------------------------------------------Table éå†----------------------------------
 
 --[=[
 
@@ -1096,23 +1514,23 @@ do
 local tbl = {"alpha", "beta", ["one"] = "uno", ["two"] = "dos"}
 
 for key, value in ipairs(tbl) do     -->1 alpha \ 2 beta
-print(key, value)                     --ipairs()º¯ÊıÓÃÓÚ±éÀútableÖĞµÄÊı×é²¿·Ö
-end  --ÕâÑùµÄÑ­»·±ØĞëÒªÇótbtestÖĞµÄkeyÎªË³ĞòµÄ£¬ÇÒ±Ø´Ó1¿ªÊ¼£¬ipairsÖ»»á´Ó1¿ªÊ¼°´Á¬ĞøµÄkeyË³Ğò±éÀúµ½key²»Á¬ĞøÎªÖ¹
+print(key, value)                     --ipairs()å‡½æ•°ç”¨äºéå†tableä¸­çš„æ•°ç»„éƒ¨åˆ†
+end  --è¿™æ ·çš„å¾ªç¯å¿…é¡»è¦æ±‚tbtestä¸­çš„keyä¸ºé¡ºåºçš„ï¼Œä¸”å¿…ä»1å¼€å§‹ï¼Œipairsåªä¼šä»1å¼€å§‹æŒ‰è¿ç»­çš„keyé¡ºåºéå†åˆ°keyä¸è¿ç»­ä¸ºæ­¢
 
 for key, value in pairs(tbl) do       -->1 alpha \ 2 beta \one uno \ two dos
-print(key, value)                      --pairs()º¯ÊıÓÃÓÚÕû¸ötable, ¼´°üÀ¨Êı×é¼°·ÇÊı×é²¿·Ö
-end                 --±éÀúË³Ğò²¢·ÇÊÇtb1ÖĞtableµÄÅÅÁĞË³Ğò£¬¶øÊÇ¸ù¾İtb1ÖĞkeyµÄhashÖµÅÅÁĞµÄË³ĞòÀ´±éÀúµÄ
+print(key, value)                      --pairs()å‡½æ•°ç”¨äºæ•´ä¸ªtable, å³åŒ…æ‹¬æ•°ç»„åŠéæ•°ç»„éƒ¨åˆ†
+end                 --éå†é¡ºåºå¹¶éæ˜¯tb1ä¸­tableçš„æ’åˆ—é¡ºåºï¼Œè€Œæ˜¯æ ¹æ®tb1ä¸­keyçš„hashå€¼æ’åˆ—çš„é¡ºåºæ¥éå†çš„
 
 for i=1, #(tbl) do
 print(key, value)
 end
---Ö»ÄÜ±éÀúµ±tbtestÖĞ´æÔÚkeyÎª1µÄvalueÊ±²Å»á³öÏÖ½á¹û£¬¶øÇÒÊÇ°´ÕÕkey´Ó1¿ªÊ¼ÒÀ´ÎµİÔö1µÄË³ĞòÀ´±éÀú£¬ÕÒµ½Ò»¸öµİÔö²»ÊÇ1µÄÊ±ºò¾Í½áÊø²»ÔÙ±éÀú£¬ÎŞÂÛºóÃæÊÇ·ñÈÔÈ»ÊÇË³ĞòµÄkey
+--åªèƒ½éå†å½“tbtestä¸­å­˜åœ¨keyä¸º1çš„valueæ—¶æ‰ä¼šå‡ºç°ç»“æœï¼Œè€Œä¸”æ˜¯æŒ‰ç…§keyä»1å¼€å§‹ä¾æ¬¡é€’å¢1çš„é¡ºåºæ¥éå†ï¼Œæ‰¾åˆ°ä¸€ä¸ªé€’å¢ä¸æ˜¯1çš„æ—¶å€™å°±ç»“æŸä¸å†éå†ï¼Œæ— è®ºåé¢æ˜¯å¦ä»ç„¶æ˜¯é¡ºåºçš„key
 
-for i=1, table.maxn(tbl) do        --Ğ§ÂÊÌ«µÍ
+for i=1, table.maxn(tbl) do        --æ•ˆç‡å¤ªä½
 print(key, value)
 end
 
-function pairsByKeys(t)               --µü´úÆ÷
+function pairsByKeys(t)               --è¿­ä»£å™¨
     local a = {}
     for n in pairs(t) do
         a[#a+1] = n
@@ -1136,12 +1554,57 @@ end
 --]=]
 
 
------------------------------------------------Table ÅÅĞò----------------------------------
+-----------------------------------------------Table æ’åº----------------------------------
 
 --[=[
 
 do
---ÊıÖµÊı×éÅÅĞò£¨×Ö·û´®¸úÊıÖµ»ìÔÚÒ»ÆğµÄÊı×éÊÇ²»ÄÜsort£©
+
+local tbl = {"apple", "pear", "orange", "grape"}      --çº¯æ•°ç»„,æ— hash
+
+table.sort(tbl)                                                              --é»˜è®¤å‡åº
+print(table.concat(tbl, "ã€"))
+
+
+local sort_func1 = function(a, b) return a > b end  --å¤§è€…åœ¨å‰
+table.sort(tbl, sort_func1)                                           --é™åº
+print(table.concat(tbl, "ã€"))
+
+local sort_func2 = function(a, b) return a < b end  --å°å‰
+table.sort(tbl, sort_func2)                                           --å‡åº
+print(table.concat(tbl, "ã€"))
+
+
+
+
+
+t = {} --Luaæœ‰ä¸€ä¸ªå‡½æ•°table.sortå¯ä»¥å¯¹è¡¨è¿›è¡Œæ’åº, å¸¦2ä¸ªå‚æ•°, ç¬¬ä¸€ä¸ªå‚æ•°æ˜¯è¡¨, ç¬¬äºŒä¸ªå‚æ•°æ˜¯æ’åºå‡½æ•°.
+
+t[1] = {name="digoal", age=30}
+t[2] = {name="francs", age=29}
+t[3] = {name="dage", age=34}
+table.sort(t, function(x,y) return x.name < y.name end) --ä½¿ç”¨table.sortå¯¹è¡¨è¿›è¡Œæ’åº, ç¬¬äºŒä¸ªå‚æ•°æ˜¯ä¸€ä¸ªå‡½æ•°, å¯ä»¥æ˜¯åŒ¿åå‡½æ•°æˆ–è€…å‡½æ•°å˜é‡.
+
+f = function(x,y) return x.name < y.name end
+table.sort(t, f)  --æ’åºå, è¡¨çš„å†…å®¹è¢«æ”¹å˜. æ‰€ä»¥table.sortå®é™…ä¸Šæ˜¯å˜æ›´äº†è¡¨çš„å†…å®¹çš„.
+print( t[1].name ) --dage
+print( t[2].name ) --digoal
+print( t[3].name ) --francs
+
+table.sort(t, function(x,y) return x.name > y.name end) --æŒ‰ç…§nameå€’åºæ’
+print( t[1].name ) --francs
+print( t[2].name ) --digoal
+print( t[3].name ) --dage
+
+table.sort(t, function(x,y) return x.age > y.age end) --æŒ‰ç…§å¹´é¾„å€’åºæ’
+print( t[1].name, t[1].age ) --dage    34
+print( t[2].name, t[2].age ) --digoal  30
+print( t[3].name, t[3].age ) --francs  29
+
+
+
+
+--æ•°å€¼æ•°ç»„æ’åºï¼ˆå­—ç¬¦ä¸²è·Ÿæ•°å€¼æ··åœ¨ä¸€èµ·çš„æ•°ç»„æ˜¯ä¸èƒ½sortï¼‰
 local test_table = {2,1,3}
 table.sort(test_table)
 for key,value in pairs(test_table) do
@@ -1152,7 +1615,7 @@ end
 --> 2   2
 --> 3   3
 
---×Ö·û´®Êı×éÅÅĞò
+--å­—ç¬¦ä¸²æ•°ç»„æ’åº
 local test_table = {"a","c","b"}
 table.sort(test_table)
 for key,value in pairs(test_table) do
@@ -1163,19 +1626,19 @@ end
 --> 2   b
 --> 3   c
 
-print("-----------°´¼üÃûKeyÅÅĞò---------------")
+print("-----------æŒ‰é”®åKeyæ’åº---------------")
 
 
---¼üÖµ¶ÔTableÅÅĞò£¨°´KeyÅÅĞò£¬²»ÊÇValue£©
+--é”®å€¼å¯¹Tableæ’åºï¼ˆæŒ‰Keyæ’åºï¼Œä¸æ˜¯Valueï¼‰
 local test_table = {a=3,b=2,c=4,d=1,}
 local key_table = {}
 local value_table={}
 
-for key,_ in pairs(test_table) do     --È¡³öËùÓĞµÄ¼ü
+for key,_ in pairs(test_table) do     --å–å‡ºæ‰€æœ‰çš„é”®
     table.insert(key_table,key)
 end
 
-table.sort(key_table)                 --¶ÔËùÓĞ¼ü½øĞĞÅÅĞò
+table.sort(key_table)                 --å¯¹æ‰€æœ‰é”®è¿›è¡Œæ’åº
 
 for _,key in pairs(key_table) do
     print(key,test_table[key])
@@ -1187,22 +1650,22 @@ end
 --> d	1
 
 
-table.sort(test_table);                --¶ÔËùÓĞ¼ü½øĞĞÅÅĞò
+table.sort(test_table);                --å¯¹æ‰€æœ‰é”®è¿›è¡Œæ’åº
 for k,v in pairs (test_table) do
 	--print (k,v)
 end
 
 
 
---table.sort(test_table,function(a,b) return(a.a<b.a) end) --°´nameÅÅ½µĞò
+--table.sort(test_table,function(a,b) return(a.a<b.a) end) --æŒ‰nameæ’é™åº
 
-print("-----------°´¼üÖµValueÅÅĞò---(Á½ÂÖÑ­»·)------------")
+print("-----------æŒ‰é”®å€¼Valueæ’åº---(ä¸¤è½®å¾ªç¯)------------")
 
-for _,value in pairs(test_table) do     --È¡³öËùÓĞµÄ¼ü
+for _,value in pairs(test_table) do     --å–å‡ºæ‰€æœ‰çš„é”®
     table.insert(value_table,value)
 end
 
-table.sort(value_table)                 --¶ÔËùÓĞ¼ü½øĞĞÅÅĞò
+table.sort(value_table)                 --å¯¹æ‰€æœ‰é”®è¿›è¡Œæ’åº
 
 for _,value in pairs(value_table) do
 	for k,v in pairs(test_table) do
@@ -1228,11 +1691,11 @@ local network={
     {name="derain",IP="210.26.23.20"},
 }
 
-table.sort(network,function(a,b) return(a.name<b.name) end) --°´nameÅÅ½µĞò
+table.sort(network,function(a,b) return(a.name<b.name) end) --æŒ‰nameæ’é™åº
 for k, v in pairs(network) do  print(k, v.name ,v.IP ) end
 print("\n")
 
-table.sort(network,function(a,b) return(a.name>b.name) end) --°´nameÅÅÉıĞò
+table.sort(network,function(a,b) return(a.name>b.name) end) --æŒ‰nameæ’å‡åº
 for k, v in pairs(network) do  print(k, v.name,v.IP) end
 print("\n")
 
@@ -1249,30 +1712,30 @@ print(table.concat(tbl, ", ")) -->gamma, delta, beta, alpha
 local guild = {}
 
 table.insert(guild, {
-¡¡name = "Cladhaire",
-¡¡class = "Rogue",
-¡¡level = 70,
+ã€€name = "Cladhaire",
+ã€€class = "Rogue",
+ã€€level = 70,
 })
 
 table.insert(guild, {
-¡¡name = "Sagart",
-¡¡class = "Priest",
-¡¡level = 70,
+ã€€name = "Sagart",
+ã€€class = "Priest",
+ã€€level = 70,
 })
 
 table.insert(guild, {
-¡¡name = "Mallaithe",
-¡¡class = "Warlock",
-¡¡level = 40,
+ã€€name = "Mallaithe",
+ã€€class = "Warlock",
+ã€€level = 40,
 })
 
 
-function sortLevelNameAsc(a, b)  --°´µÈ¼¶ÉıĞòÅÅĞò, ÔÚµÈ¼¶ÏàÍ¬Ê±, °´ĞÕÃûÉıĞòÅÅĞò
-¡¡if a.level == b.level then
-¡¡¡¡return a.name < b.name
-¡¡else
-¡¡¡¡return a.level < b.level
-¡¡end
+function sortLevelNameAsc(a, b)  --æŒ‰ç­‰çº§å‡åºæ’åº, åœ¨ç­‰çº§ç›¸åŒæ—¶, æŒ‰å§“åå‡åºæ’åº
+ã€€if a.level == b.level then
+ã€€ã€€return a.name < b.name
+ã€€else
+ã€€ã€€return a.level < b.level
+ã€€end
 end
 
 
@@ -1288,27 +1751,28 @@ end
 --]=]
 
 
---------------------------------------------×Ö·û´®×ªtable-------------------------------------
+--------------------------------------------å­—ç¬¦ä¸²è½¬table-------------------------------------
 
 --[[
 do;
 
-local a = "{pos=3, name='ÎïÆ·', color='½ğ»ÆÉ«'}"
+local a = "{pos=3, name='ç‰©å“', color='é‡‘é»„è‰²'}"
 local b = loadstring("return "..a);
 a = b();
-print(a.pos, a.name, a.color)  --ÎïÆ·
+print(a.pos, a.name, a.color)  --ç‰©å“
+
 end;
 --]]
 
 
---------------------table °²²å¡¢É¾³ıºÍ²éÕÒÊ±¼ä¸´ÔÓ¶ÈÎªO(1)µÄ¼¯ºÏ-------------------------
+--------------------table å®‰æ’ã€åˆ é™¤å’ŒæŸ¥æ‰¾æ—¶é—´å¤æ‚åº¦ä¸ºO(1)çš„é›†åˆ-------------------------
 
 --[[
 do
 
 function newset()
-     local reverse = {} --ÒÔÊı¾İÎªkey£¬Êı¾İÔÚsetÖĞµÄÎ»ÖÃÎªvalue
-     local set = {} --Ò»¸öÊı×é£¬ÆäÖĞµÄvalue¾ÍÊÇÒª¹ÜÀíµÄÊı¾İ
+     local reverse = {} --ä»¥æ•°æ®ä¸ºkeyï¼Œæ•°æ®åœ¨setä¸­çš„ä½ç½®ä¸ºvalue
+     local set = {} --ä¸€ä¸ªæ•°ç»„ï¼Œå…¶ä¸­çš„valueå°±æ˜¯è¦ç®¡ç†çš„æ•°æ®
      return setmetatable(set,{__index = {
           insert = function(set,value)
                if not reverse[value] then
@@ -1321,9 +1785,9 @@ function newset()
                local index = reverse[value]
                if index then
                     reverse[value] = nil
-                    local top = table.remove(set) --É¾³ıÊı×éÖĞ×îºóÒ»¸öÔªËØ
+                    local top = table.remove(set) --åˆ é™¤æ•°ç»„ä¸­æœ€åä¸€ä¸ªå…ƒç´ 
                     if top ~= value then
-                         --Èô²»ÊÇÒªÉ¾³ıµÄÖµ£¬ÔòÌæ»»Ëü
+                         --è‹¥ä¸æ˜¯è¦åˆ é™¤çš„å€¼ï¼Œåˆ™æ›¿æ¢å®ƒ
                          reverse[top] = index
                          set[index] = top
                     end
@@ -1353,7 +1817,7 @@ print(s:find("hi0"))    -->false
 end
 --]]
 
--------------------´òÓ¡ÒÔÀàĞÍ¹¦ÄÜÊµÏÖtableÇ¶Ì×table-----------------------
+-------------------æ‰“å°ä»¥ç±»å‹åŠŸèƒ½å®ç°tableåµŒå¥—table-----------------------
 
 --[[
 do
@@ -1427,34 +1891,76 @@ end
 end
 --]]
 
--------------------------------------------------------Ôª±í---------------------------------------------
+
+--------------------------------------------------é¢å‘å¯¹è±¡å®ç°----------------------------------------
+--[==[
+do
+
+
+Acount = {
+    balance = 0,
+    withdraw = function(self ,v)
+        self.balance = self.balance - v
+    end
+}
+
+function Acount:deposit(v)
+    self.balance = self.balance + v
+end
+
+function Acount:new(o)
+    --è®©o ä¸å¯èƒ½ä¸ºç©ºï¼Œæ˜¯ä¸€ä¸ªè¡¨
+    o = o or {}
+    --è¿™é‡Œçš„selfæ˜¯Acountè‡ªèº« ï¼Œåˆ™è¡¨oçš„å…ƒè¡¨æ˜¯Acount
+    setmetatable(o ,self)
+    --__indexæŒ‡å‘Accountè‡ªèº«,å½“newçš„å¯¹è±¡(ä¹Ÿå°±æ˜¯è¡¨)æ‰¾ä¸åˆ°å…ƒç´ æ—¶ï¼Œåˆ™ä¼šä»Accountè¡¨ä¸­æ‰¾ã€‚
+    self.__index = self
+    return o
+end
+
+a = Acount:new({balance = 0})
+b = Acount:new{balance = 55}
+
+--è¿™é‡Œaè°ƒç”¨depositæ–¹æ³•ï¼Œä½†æ˜¯æ‰¾ä¸åˆ°ï¼Œäºæ˜¯å»å®ƒçš„å…ƒè¡¨é‡Œæ‰¾
+--ç›¸å½“äº:gemetatable(a).__index.deposit(a ,1000)
+a:deposit(1000)
+b:deposit(1000)
+print(a.balance)
+print(b.balance)
+
+
+end
+--]==]
+
+
+-------------------------------------------------------å…ƒè¡¨---------------------------------------------
 
 --[==[
 do
 
 t = {}
-print(getmetatable(t))  --ÏÔÊ¾¹ıÔª±í ´ËÊ±ÊÇnil
+print(getmetatable(t))  --æ˜¾ç¤ºè¿‡å…ƒè¡¨ æ­¤æ—¶æ˜¯nil
 
---¿ÉÒÔÓÃsetmetatableÀ´ÉèÖÃ»òĞŞ¸ÄÈÎºÎtableµÄÔª±í
+--å¯ä»¥ç”¨setmetatableæ¥è®¾ç½®æˆ–ä¿®æ”¹ä»»ä½•tableçš„å…ƒè¡¨
 t1 = {}
 setmetatable(t,t1)
 -- assert(getmetatable(t) == t1, "No Meta")    -- if not n then error("invalid input") end
 
---¸øÒ»¸ötable¹ØÁªÔª±í ¾ÍÊÇµ±Äã·ÃÎÊµÄÕâ¸ötableËù·ÃÎÊµÄÖµ²»´æÔÚµÄÊ±ºò »á·µ»ØÄ¬ÈÏµÄÔª±íÀïµÄÖµ, ¿ÉÒÔÀí½â³ÉÃæÏò¶ÔÏóÀïµÄ¼Ì³Ğ, Ôª±í¾ÍÊÇËüµÄ¸¸Àà Èç¹û±¾ÉíÓĞÖµ¾ÍÓÃ±¾ÉíµÄÖµ Ã»Öµ¾ÍÓÃ¸¸ÀàµÄÖµ
+--ç»™ä¸€ä¸ªtableå…³è”å…ƒè¡¨ å°±æ˜¯å½“ä½ è®¿é—®çš„è¿™ä¸ªtableæ‰€è®¿é—®çš„å€¼ä¸å­˜åœ¨çš„æ—¶å€™ ä¼šè¿”å›é»˜è®¤çš„å…ƒè¡¨é‡Œçš„å€¼, å¯ä»¥ç†è§£æˆé¢å‘å¯¹è±¡é‡Œçš„ç»§æ‰¿, å…ƒè¡¨å°±æ˜¯å®ƒçš„çˆ¶ç±» å¦‚æœæœ¬èº«æœ‰å€¼å°±ç”¨æœ¬èº«çš„å€¼ æ²¡å€¼å°±ç”¨çˆ¶ç±»çš„å€¼
 local t = {}
 local mt = {7,8,9}
-setmetatable(t,{__index = mt}) --¿ÉÒÔÀí½â³ÉluaµÄÃæÏò¶ÔÏó, mtÊÇ¸¸Àà tÊÇ×ÓÀà
+setmetatable(t,{__index = mt}) --å¯ä»¥ç†è§£æˆluaçš„é¢å‘å¯¹è±¡, mtæ˜¯çˆ¶ç±» tæ˜¯å­ç±»
 print(t[3])
 
 
 
---------------------------------------Ôª±í Ôª·½·¨-------------------------------------
--- tableµÄÔª±íÌá¹©Ò»ÖÖ»úÖÆ£¬¿ÉÒÔÖØ¶¨ÒåtableµÄÒ»Ğ©²Ù×÷¡£ÀàËÆjsµÄprototypeĞĞÎª
+--------------------------------------å…ƒè¡¨ å…ƒæ–¹æ³•-------------------------------------
+-- tableçš„å…ƒè¡¨æä¾›ä¸€ç§æœºåˆ¶ï¼Œå¯ä»¥é‡å®šä¹‰tableçš„ä¸€äº›æ“ä½œã€‚ç±»ä¼¼jsçš„prototypeè¡Œä¸º
 
-f1 = {a = 1, b = 2} -- ±íÊ¾Ò»¸ö·ÖÊı a/b.  1/2
+f1 = {a = 1, b = 2} -- è¡¨ç¤ºä¸€ä¸ªåˆ†æ•° a/b.  1/2
 f2 = {a = 2, b = 3}
 
--- Õâ¸öÊÇ´íÎóµÄ£º
+-- è¿™ä¸ªæ˜¯é”™è¯¯çš„ï¼š
 -- s = f1 + f2
 
 metafraction = {}
@@ -1468,18 +1974,18 @@ end
 setmetatable(f1, metafraction)
 setmetatable(f2, metafraction)
 
-s = f1 + f2 -- µ÷ÓÃÔÚf1µÄÔª±íÉÏµÄ__add(f1, f2) ·½·¨
+s = f1 + f2 -- è°ƒç”¨åœ¨f1çš„å…ƒè¡¨ä¸Šçš„__add(f1, f2) æ–¹æ³•
  print (s.a.."/"..s.b)  --7/6
 
--- ÀàĞÎÊ½µÄÄ£Ê½£º -- Ôª±íµÄ__index ¿ÉÒÔÖØÔØµãÔËËã·ûµÄ²éÕÒ
+-- ç±»å½¢å¼çš„æ¨¡å¼ï¼š -- å…ƒè¡¨çš„__index å¯ä»¥é‡è½½ç‚¹è¿ç®—ç¬¦çš„æŸ¥æ‰¾
 defaultFavs = {animal = 'gru', food = 'donuts'}
 myFavs = {food = 'pizza'}
 setmetatable(myFavs, {__index = defaultFavs})
-eatenBy = myFavs.animal -- ¿ÉÒÔ¹¤×÷£¡ÕâÒª¸ĞĞ»Ôª±íµÄÖ§³Ö
+eatenBy = myFavs.animal -- å¯ä»¥å·¥ä½œï¼è¿™è¦æ„Ÿè°¢å…ƒè¡¨çš„æ”¯æŒ
 
  print (eatenBy)  --gru
 
--- ÕâÀïÊÇtableµÄÔª·½·¨µÄÈ«²¿Çåµ¥£º
+-- è¿™é‡Œæ˜¯tableçš„å…ƒæ–¹æ³•çš„å…¨éƒ¨æ¸…å•ï¼š
 -- __add(a, b)                     for a + b
 -- __sub(a, b)                     for a - b
 -- __mul(a, b)                     for a * b
@@ -1499,7 +2005,7 @@ eatenBy = myFavs.animal -- ¿ÉÒÔ¹¤×÷£¡ÕâÒª¸ĞĞ»Ôª±íµÄÖ§³Ö
 
 -- [[
 Set = {}
-mt = {} --Ôª±í
+mt = {} --å…ƒè¡¨
 
 function Set.new(l)
     local set = {}
@@ -1526,10 +2032,10 @@ function Set.print(s)
 end
 
 
---1 ¼Ó(__add), ²¢¼¯===============================
+--1 åŠ (__add), å¹¶é›†===============================
 function Set.union(a, b)
 --[[    if getmetatable(a) ~= mt or getmetatable(b) ~= mt then
-        error("attemp to 'add' a set with a non-set value", 2)   --errorµÚ¶ş¸ö²ÎÊıµÄº¬ÒåP116
+        error("attemp to 'add' a set with a non-set value", 2)   --errorç¬¬äºŒä¸ªå‚æ•°çš„å«ä¹‰P116
     end]]
     local res = Set.new{}
     for k in pairs(a) do res[k] = true end
@@ -1546,13 +2052,13 @@ mt.__add = Set.union
 s3 = s1 + s2
 --Set.print(s3)
 
---[[Ôª±í»ìÓÃ
+--[[å…ƒè¡¨æ··ç”¨
 s = Set.new{1, 2, 3}
 s = s + 8
 Set.print(s + 8)
 ]]
 
---2 ³Ë(__mul), ½»¼¯==============================
+--2 ä¹˜(__mul), äº¤é›†==============================
 function Set.intersection(a, b)
     local res = Set.new{}
     for k in pairs(a) do
@@ -1567,7 +2073,7 @@ mt.__mul = Set.intersection
 
 
 
---3 ¹ØÏµÀà===================================NaNµÄ¸ÅÄî====
+--3 å…³ç³»ç±»===================================NaNçš„æ¦‚å¿µ====
 mt.__le = function(a, b)
     for k in pairs(a) do
         if not b[k] then return false end
@@ -1579,7 +2085,7 @@ mt.__lt = function(a, b)
     return a <= b and not (b <= a)
 end
 
-mt.__eq = function(a, b)           --¾¹È»ÄÜÕâÃ´ÓÃ£¡£¿----
+mt.__eq = function(a, b)           --ç«Ÿç„¶èƒ½è¿™ä¹ˆç”¨ï¼ï¼Ÿ----
     return a <= b and b <= a
 end
 
@@ -1594,9 +2100,9 @@ print(g1 == g1 * g2)
 --]]
 
 --============================================
---4 table·ÃÎÊµÄÔª·½·¨=========================
+--4 tableè®¿é—®çš„å…ƒæ–¹æ³•=========================
 -- [[
---__indexÓĞ¹Ø¼Ì³ĞµÄµäĞÍÊ¾Àı
+--__indexæœ‰å…³ç»§æ‰¿çš„å…¸å‹ç¤ºä¾‹
 Window = {}
 Window.prototype = {x = 0, y = 0, width = 100, height}
 Window.mt = {}
@@ -1613,7 +2119,7 @@ end
 w = Window.new{x = 10, y = 20}
 print(w.width)
 
---__indexĞŞ¸ÄtableÄ¬ÈÏÖµ
+--__indexä¿®æ”¹tableé»˜è®¤å€¼
 function setDefault (t, d)
     local mt = {__index = function () return d end}
     setmetatable(t, mt)
@@ -1626,7 +2132,7 @@ print(tab.x, tab.z)
 
 --]]
 
---13.4.5 Ö»¶ÁµÄtable
+--13.4.5 åªè¯»çš„table
 function readOnly(t)
     local proxy = {}
     local mt = {
@@ -1641,59 +2147,59 @@ end
 
 days = readOnly{"Sunday", "Monday", "Tuesday", "W", "T", "F", "S"}
 print(days[1])
---days[2] = "Noday"   --Ö»¶ÁµÄtable , ÏŞÖÆ¸üĞÂ
+--days[2] = "Noday"   --åªè¯»çš„table , é™åˆ¶æ›´æ–°
 
 
-------------------------------------------------- Àà·ç¸ñµÄtableºÍ¼Ì³Ğ---------------------------------
+------------------------------------------------- ç±»é£æ ¼çš„tableå’Œç»§æ‰¿---------------------------------
 
-Dog = {} -- Àà? ÆäÊµÍêÈ«ÊÇÒ»¸ötable
+Dog = {} -- ç±»? å…¶å®å®Œå…¨æ˜¯ä¸€ä¸ªtable
 
-function Dog:new() -- º¯Êıtablename:fn(...) Óëº¯Êıtablename.fn(self, ...) ÊÇÒ»ÑùµÄ  -- Ã°ºÅ£¨:£©Ö»ÊÇÌí¼ÓÁËself×÷ÎªµÚÒ»¸ö²ÎÊı
-newObj = {sound = 'woof'} -- newObjÊÇÀàDogµÄÒ»¸öÊµÀı
-self.__index = self -- selfÎª³õÊ¼»¯µÄÀàÊµÀı¡£Í¨³£self = Dog£¬²»¹ı¼Ì³Ğ¹ØÏµ¿ÉÒÔ¸Ä±äÕâ¸ö, Èç¹û°ÑnewObjµÄÔª±íºÍ__index¶¼ÉèÖÃÎªself£¬ newObj¾Í¿ÉÒÔµÃµ½selfµÄº¯Êı
-return setmetatable(newObj, self) -- setmetatable·µ»ØÆäµÚÒ»¸ö²ÎÊı
+function Dog:new() -- å‡½æ•°tablename:fn(...) ä¸å‡½æ•°tablename.fn(self, ...) æ˜¯ä¸€æ ·çš„  -- å†’å·ï¼ˆ:ï¼‰åªæ˜¯æ·»åŠ äº†selfä½œä¸ºç¬¬ä¸€ä¸ªå‚æ•°
+newObj = {sound = 'woof'} -- newObjæ˜¯ç±»Dogçš„ä¸€ä¸ªå®ä¾‹
+self.__index = self -- selfä¸ºåˆå§‹åŒ–çš„ç±»å®ä¾‹ã€‚é€šå¸¸self = Dogï¼Œä¸è¿‡ç»§æ‰¿å…³ç³»å¯ä»¥æ”¹å˜è¿™ä¸ª, å¦‚æœæŠŠnewObjçš„å…ƒè¡¨å’Œ__indexéƒ½è®¾ç½®ä¸ºselfï¼Œ newObjå°±å¯ä»¥å¾—åˆ°selfçš„å‡½æ•°
+return setmetatable(newObj, self) -- setmetatableè¿”å›å…¶ç¬¬ä¸€ä¸ªå‚æ•°
 end
 
-function Dog:makeSound() -- Ã°ºÅ£¨£º£©ÔÚµÚ2ÌõÊÇ¹¤×÷µÄ£¬²»¹ıÕâÀïÎÒÃÇÆÚÍû  selfÊÇÒ»¸öÊµÀı£¬¶ø²»ÊÇÀà
+function Dog:makeSound() -- å†’å·ï¼ˆï¼šï¼‰åœ¨ç¬¬2æ¡æ˜¯å·¥ä½œçš„ï¼Œä¸è¿‡è¿™é‡Œæˆ‘ä»¬æœŸæœ›  selfæ˜¯ä¸€ä¸ªå®ä¾‹ï¼Œè€Œä¸æ˜¯ç±»
 print('I say ' .. self.sound)
 end
 
-mrDog = Dog:new() -- ÓëDog.new(Dog)ÀàËÆ£¬ËùÒÔ self = Dog in new().
-mrDog:makeSound() -- 'I say woof' -- ÓëmrDog.makeSound(mrDog)Ò»Ñù; self = mrDog.
+mrDog = Dog:new() -- ä¸Dog.new(Dog)ç±»ä¼¼ï¼Œæ‰€ä»¥ self = Dog in new().
+mrDog:makeSound() -- 'I say woof' -- ä¸mrDog.makeSound(mrDog)ä¸€æ ·; self = mrDog.
 
 
--- ¼Ì³ĞµÄÀı×Ó
+-- ç»§æ‰¿çš„ä¾‹å­
 
-LoudDog = Dog:new() -- LoudDog»ñµÃDogµÄ·½·¨ºÍ±äÁ¿ÁĞ±í
+LoudDog = Dog:new() -- LoudDogè·å¾—Dogçš„æ–¹æ³•å’Œå˜é‡åˆ—è¡¨
 
 function LoudDog:makeSound()
-s = self.sound .. ' ' -- Í¨¹ınew()£¬selfÓĞÒ»¸ö'sound'µÄkey from new()
+s = self.sound .. ' ' -- é€šè¿‡new()ï¼Œselfæœ‰ä¸€ä¸ª'sound'çš„key from new()
 print(s .. s .. s)
 end
 
-seymour = LoudDog:new() -- ÓëLoudDog.new(LoudDog)Ò»Ñù£¬²¢ÇÒ±»×ª»»³É  Dog.new(LoudDog)£¬ÒòÎªLoudDogÃ»ÓĞ'new' µÄkey£¬  ²»¹ıÔÚËüµÄÔª±í¿ÉÒÔ¿´µ½ __index = Dog¡£½á¹û: seymourµÄÔª±íÊÇLoudDog£¬²¢ÇÒ LoudDog.__index = LoudDog¡£ËùÒÔÓĞseymour.key =seymour.key, LoudDog.key, Dog.key, Òª¿´Õë¶Ô¸ø¶¨µÄkeyÄÄÒ»¸ötableÅÅÔÚÇ°Ãæ¡£
+seymour = LoudDog:new() -- ä¸LoudDog.new(LoudDog)ä¸€æ ·ï¼Œå¹¶ä¸”è¢«è½¬æ¢æˆ  Dog.new(LoudDog)ï¼Œå› ä¸ºLoudDogæ²¡æœ‰'new' çš„keyï¼Œ  ä¸è¿‡åœ¨å®ƒçš„å…ƒè¡¨å¯ä»¥çœ‹åˆ° __index = Dogã€‚ç»“æœ: seymourçš„å…ƒè¡¨æ˜¯LoudDogï¼Œå¹¶ä¸” LoudDog.__index = LoudDogã€‚æ‰€ä»¥æœ‰seymour.key =seymour.key, LoudDog.key, Dog.key, è¦çœ‹é’ˆå¯¹ç»™å®šçš„keyå“ªä¸€ä¸ªtableæ’åœ¨å‰é¢ã€‚
 
-seymour:makeSound() -- 'woof woof woof' -- ÔÚLoudDog¿ÉÒÔÕÒµ½'makeSound'µÄkey£»ÕâÓë
--- LoudDog.makeSound(seymour)Ò»Ñù.
+seymour:makeSound() -- 'woof woof woof' -- åœ¨LoudDogå¯ä»¥æ‰¾åˆ°'makeSound'çš„keyï¼›è¿™ä¸
+-- LoudDog.makeSound(seymour)ä¸€æ ·.
 
 
--- Èç¹ûĞèÒª£¬×ÓÀàÒ²¿ÉÒÔÓĞnew()£¬Óë»ùÀàµÄÀàËÆ£º
+-- å¦‚æœéœ€è¦ï¼Œå­ç±»ä¹Ÿå¯ä»¥æœ‰new()ï¼Œä¸åŸºç±»çš„ç±»ä¼¼ï¼š
 function LoudDog:new()
 newObj = {}
--- ³õÊ¼»¯newObj
+-- åˆå§‹åŒ–newObj
 self.__index = self
 return setmetatable(newObj, self)
 end
 
 
-------------------------------------------Àà¼Ì³Ğ-------------------------
+------------------------------------------ç±»ç»§æ‰¿-------------------------
 
-A = {}   --»ùÀàA
+A = {}   --åŸºç±»A
 
-function A:new(o)         --¹¹Ôì A:New(o)Óë A.New(self,o)
+function A:new(o)         --æ„é€  A:New(o)ä¸ A.New(self,o)
     o = o or {}
-    setmetatable(o,self)   --Ôª±í
-    self.__index = self         --__index·½·¨ÊÇÓÃÀ´È·¶¨Ò»¸ö±íÔÚ±»×÷ÎªÔª±íÊ±µÄ²éÕÒ·½·¨
+    setmetatable(o,self)   --å…ƒè¡¨
+    self.__index = self         --__indexæ–¹æ³•æ˜¯ç”¨æ¥ç¡®å®šä¸€ä¸ªè¡¨åœ¨è¢«ä½œä¸ºå…ƒè¡¨æ—¶çš„æŸ¥æ‰¾æ–¹æ³•
     return o
 end
 
@@ -1701,17 +2207,17 @@ function A:funName()
     print('A')
 end
 
---ÈôÏë´ÓÕâ¸öÀàÅÉÉú³öÒ»¸ö×ÓÀàB£¬ÒÔÊ¹ÆäÄÜ´òÓ¡³öÀàÃû¡£ÔòÏÈĞèÒª´´½¨Ò»¸ö¿ÕµÄÀà£¬´Ó»ùÀà¼Ì³ĞËùÓĞµÄ²Ù×÷£º
+--è‹¥æƒ³ä»è¿™ä¸ªç±»æ´¾ç”Ÿå‡ºä¸€ä¸ªå­ç±»Bï¼Œä»¥ä½¿å…¶èƒ½æ‰“å°å‡ºç±»åã€‚åˆ™å…ˆéœ€è¦åˆ›å»ºä¸€ä¸ªç©ºçš„ç±»ï¼Œä»åŸºç±»ç»§æ‰¿æ‰€æœ‰çš„æ“ä½œï¼š
 B = A:new()
 
-s = B:new()   --B´ÓAÖĞ¼Ì³ĞÁËnew£¬¾ÍÏñ¼Ì³ĞÆäËû·½·¨Ò»Ñù¡£²»¹ıÕâ´ÎnewÔÚÖ´ĞĞÊ±£¬ËüµÄself²ÎÊı±íÊ¾ÎªB¡£Òò´Ë£¬sµÄÔª±íÎªB£¬BÖĞ×Ö¶Î__indexµÄÖµÒ²ÊÇB¡£s¼Ì³Ğ×ÔB£¬¶øBÓÖ¼Ì³Ğ×ÔA
+s = B:new()   --Bä»Aä¸­ç»§æ‰¿äº†newï¼Œå°±åƒç»§æ‰¿å…¶ä»–æ–¹æ³•ä¸€æ ·ã€‚ä¸è¿‡è¿™æ¬¡newåœ¨æ‰§è¡Œæ—¶ï¼Œå®ƒçš„selfå‚æ•°è¡¨ç¤ºä¸ºBã€‚å› æ­¤ï¼Œsçš„å…ƒè¡¨ä¸ºBï¼ŒBä¸­å­—æ®µ__indexçš„å€¼ä¹Ÿæ˜¯Bã€‚sç»§æ‰¿è‡ªBï¼Œè€ŒBåˆç»§æ‰¿è‡ªA
 
 
-function B:funName()   --BÖØĞ´funName()º¯Êı
+function B:funName()   --Bé‡å†™funName()å‡½æ•°
     print('B')
 end
 
-s:funName()    --Êä³öµÄÊÇB
+s:funName()    --è¾“å‡ºçš„æ˜¯B
 
 
 
@@ -1722,11 +2228,11 @@ end
 
 --[[
 do
--------------------------Àà¹¹Ôì-------------------------
+-------------------------ç±»æ„é€ -------------------------
 
 Class = {x=0,y=0}
-Class.__index = Class    --ÖØ¶¨ÒåÔª±íµÄË÷Òı£¬±ØĞëÒªÓĞ
-function Class:new(x,y)   --Ä£Äâ¹¹ÔìÌå£¬Ò»°ãÃû³ÆÎªnew()
+Class.__index = Class    --é‡å®šä¹‰å…ƒè¡¨çš„ç´¢å¼•ï¼Œå¿…é¡»è¦æœ‰
+function Class:new(x,y)   --æ¨¡æ‹Ÿæ„é€ ä½“ï¼Œä¸€èˆ¬åç§°ä¸ºnew()
         local self = {}
         setmetatable(self, Class)
         self.x = x
@@ -1737,12 +2243,12 @@ function Class:test()
     print(self.x,self.y)
 end
 
-function Class:gto()  --ĞÂ¶¨ÒåµÄÒ»¸öº¯Êıgto()
+function Class:gto()  --æ–°å®šä¹‰çš„ä¸€ä¸ªå‡½æ•°gto()
    return 100
 end
 
 function Class:gio()
-   return self:gto() * 2   --ÕâÀï»áÒıÓÃgto()
+   return self:gto() * 2   --è¿™é‡Œä¼šå¼•ç”¨gto()
 end
 
 function Class:plus()
@@ -1750,38 +2256,38 @@ function Class:plus()
         self.y = self.y + 1
 end
 
--------------------------ÀàÊµÏÖ-------------------------
+-------------------------ç±»å®ç°-------------------------
 
 objA = Class:new(1,2)
 objA:test()                 -->1    2
 print(objA.x,objA.y)   --> 1    2
 
--------------------------Àà¼Ì³Ğ-------------------------
+-------------------------ç±»ç»§æ‰¿-------------------------
 
-Main = {z=0}   --ÉùÃ÷ÁËĞÂµÄÊôĞÔZ
-setmetatable(Main, Class)   --ÉèÖÃÀàĞÍÊÇClass
-Main.__index = Main  --»¹ÊÇºÍÀà¶¨ÒåÒ»Ñù£¬±íË÷ÒıÉè¶¨Îª×ÔÉí
+Main = {z=0}   --å£°æ˜äº†æ–°çš„å±æ€§Z
+setmetatable(Main, Class)   --è®¾ç½®ç±»å‹æ˜¯Class
+Main.__index = Main  --è¿˜æ˜¯å’Œç±»å®šä¹‰ä¸€æ ·ï¼Œè¡¨ç´¢å¼•è®¾å®šä¸ºè‡ªèº«
 
-function Main:new(x,y,z)   --¹¹ÔìÌå£¬¼ÓÉÏÁËÒ»¸öĞÂµÄ²ÎÊı
-   local self = {}  --³õÊ¼»¯¶ÔÏó×ÔÉí
-   self = Class:new(x,y) --½«¶ÔÏó×ÔÉíÉè¶¨Îª¸¸Àà£¬Õâ¸öÓï¾äÏàµ±ÓÚÆäËûÓïÑÔµÄsuper
-   setmetatable(self, Main)   --½«¶ÔÏó×ÔÉíÔª±íÉè¶¨ÎªMainÀà
-   self.z= z   --ĞÂµÄÊôĞÔ³õÊ¼»¯£¬Èç¹ûÃ»ÓĞ½«»á°´ÕÕÉùÃ÷=0
+function Main:new(x,y,z)   --æ„é€ ä½“ï¼ŒåŠ ä¸Šäº†ä¸€ä¸ªæ–°çš„å‚æ•°
+   local self = {}  --åˆå§‹åŒ–å¯¹è±¡è‡ªèº«
+   self = Class:new(x,y) --å°†å¯¹è±¡è‡ªèº«è®¾å®šä¸ºçˆ¶ç±»ï¼Œè¿™ä¸ªè¯­å¥ç›¸å½“äºå…¶ä»–è¯­è¨€çš„super
+   setmetatable(self, Main)   --å°†å¯¹è±¡è‡ªèº«å…ƒè¡¨è®¾å®šä¸ºMainç±»
+   self.z= z   --æ–°çš„å±æ€§åˆå§‹åŒ–ï¼Œå¦‚æœæ²¡æœ‰å°†ä¼šæŒ‰ç…§å£°æ˜=0
    return self
 end
 
--------------------------Àà¶àÌ¬-------------------------
+-------------------------ç±»å¤šæ€-------------------------
 
 
-function Main:go()   --¶¨ÒåÒ»¸öĞÂµÄ·½·¨
+function Main:go()   --å®šä¹‰ä¸€ä¸ªæ–°çš„æ–¹æ³•
    self.x = self.x + 10
 end
 
-function Main:test()   --ÖØ¶¨Òå¸¸ÀàµÄ·½·¨
+function Main:test()   --é‡å®šä¹‰çˆ¶ç±»çš„æ–¹æ³•
     print(self.x,self.y,self.z)
 end
 
--------------------------Àà²âÊÔ-------------------------
+-------------------------ç±»æµ‹è¯•-------------------------
 
 c = Main:new(20,40,100)
 c:test()
@@ -1792,10 +2298,278 @@ d:test()
 c:test()
 
 end
+
+
+
+-------------------------ç±»å®ç°-------------------------
+
+ClassYM = {x=0,y=0}  --è¿™å¥æ˜¯é‡å®šä¹‰å…ƒè¡¨çš„ç´¢å¼•ï¼Œå¿…é¡»è¦æœ‰ï¼Œ
+ClassYM.__index = ClassYM
+
+function ClassYM:new(x,y)  --æ¨¡æ‹Ÿæ„é€ ä½“ï¼Œä¸€èˆ¬åç§°ä¸ºnew()
+        local self = {}
+        setmetatable(self, ClassYM)   --å¿…é¡»è¦æœ‰
+        self.x = x
+        self.y = y
+  return self
+end
+
+function ClassYM:test()
+    print(self.x,self.y)
+end
+
+objA = ClassYM:new(1,2)
+objA:test()
+print(objA.x,objA.y)
+
+-- è¿è¡Œç»“æœå¦‚ä¸‹ï¼š
+-- 1   2
+-- 1   2
+
+-- print(objA:x,objA:y) -- ä¼šæŠ¥é”™ï¼Œè°ƒç”¨ojbA.testä¹Ÿä¼šæŠ¥é”™
+
+objA = ClassYM:new(1,2)  -- è°ƒç”¨
+-- å†è°ƒç”¨objA.test()æ—¶ç»“æœå¦‚ä¸‹ï¼š-- 2  0
+
+objA = ClassYM:new(self,1,2)  -- å¦‚è°ƒç”¨
+-- å†è°ƒç”¨objA.test()æ—¶ç»“æœå¦‚ä¸‹ï¼š
+-- 1  2
+
+Main = {z=0}   --2ï¼Œç»§æ‰¿ å£°æ˜äº†æ–°çš„å±æ€§Z
+setmetatable(Main, Class)  --è®¾ç½®ç±»å‹æ˜¯Class
+Main.__index = Main  --è¿˜æ˜¯å’Œç±»å®šä¹‰ä¸€æ ·ï¼Œè¡¨ç´¢å¼•è®¾å®šä¸ºè‡ªèº«
+
+function Main:new(x,y,z)   --è¿™é‡Œæ˜¯æ„é€ ä½“ï¼Œçœ‹ï¼ŒåŠ ä¸Šäº†ä¸€ä¸ªæ–°çš„å‚æ•°
+   local self = {}  --åˆå§‹åŒ–å¯¹è±¡è‡ªèº«
+   self = Class:new(x,y) --å°†å¯¹è±¡è‡ªèº«è®¾å®šä¸ºçˆ¶ç±»ï¼Œè¿™ä¸ªè¯­å¥ç›¸å½“äºå…¶ä»–è¯­è¨€çš„super
+   setmetatable(self, Main) --å°†å¯¹è±¡è‡ªèº«å…ƒè¡¨è®¾å®šä¸ºMainç±»
+   self.z= z --æ–°çš„å±æ€§åˆå§‹åŒ–ï¼Œå¦‚æœæ²¡æœ‰å°†ä¼šæŒ‰ç…§å£°æ˜=0
+   return self
+end
+
+function Main:go()  --å®šä¹‰ä¸€ä¸ªæ–°çš„æ–¹æ³•
+   self.x = self.x + 10
+end
+
+function Main:test()   --é‡å®šä¹‰çˆ¶ç±»çš„æ–¹æ³•
+    print(self.x,self.y,self.z)
+end
+
+c = Main:new(20,40,100)   -- æµ‹è¯•ä»£ç å¦‚ä¸‹ï¼š
+c:test()
+d = Main:new(10,50,200)
+d:go()
+d:plus()
+d:test()
+c:test()
+
+Class = {x=0,y=0}   -- 3ï¼Œå¤šæ€
+Class.__index = Class
+function Class:new(x,y)
+        local self = {}
+        setmetatable(self, Class)
+        self.x = x
+        self.y = y
+  return self
+end
+
+function Class:test()
+    print(self.x,self.y)
+end
+
+function Class:gto()  --æ–°å®šä¹‰çš„ä¸€ä¸ªå‡½æ•°gto()
+   return 100
+end
+
+function Class:gio()   --è¿™é‡Œä¼šå¼•ç”¨gto()
+   return self:gto() * 2
+end
+
+function Class:plus()
+    self.x = self.x + 1
+        self.y = self.y + 1
+end
+
+Main = {z=0}  --ç»§æ‰¿éƒ¨åˆ†ä»£ç å¦‚ä¸‹ï¼š
+setmetatable(Main, Class)
+Main.__index = Main
+
+function Main:new(x,y,z)
+   local self = {}
+   self = Class:new(x,y)
+   setmetatable(self, Main)
+   self.z= z
+   return self
+end
+
+function Main:gto()   --é‡æ–°å®šä¹‰äº†gto()
+   return 50
+end
+
+function Main:go()
+   self.x = self.x + 10
+end
+
+function Main:test()
+    print(self.x,self.y,self.z)
+end
+
+a = Class:new(10,20)   --æµ‹è¯•ä»£ç å¦‚ä¸‹ï¼š
+print(a:gio())
+d = Main:new(10,50,200)
+print(d:gio())
+print(a:gio())
+
+
+
+
+Account={ test1=function(a) print("Account test1") end }
+Account.test2=function(a) print("Account test2") end
+function Account.test3(a) print("Account test3") end
+
+--ç”¨luaè¿›è¡Œé¢å‘å¯¹è±¡çš„ç¼–ç¨‹,å£°æ˜æ–¹æ³•å’Œè°ƒç”¨æ–¹æ³•ç»Ÿä¸€ç”¨å†’å·,å¯¹äºå±æ€§çš„è°ƒç”¨å…¨éƒ¨ç”¨ç‚¹å·
+
+function Account:new (o)  --ç±»çš„å®ä¾‹åŒ–
+
+  o = o or {}
+  setmetatable(o, self)
+  self.__index = self
+
+  return o
+
+end
+
+function Account.print0(o,a)
+  print(a)
+end
+
+function Account:print1(a)
+  print(a)
+end
+
+
+--æ–¹æ³•å®šä¹‰æµ‹è¯•
+Account.test1()
+Account.test2()
+Account.test3()
+
+--ç±»æµ‹è¯•
+acc=Account:new()
+acc.test1()
+acc.print0(acc,"dot print0")
+acc:print0("not dot print0")
+acc.print1(acc,"dot print1")
+acc:print1("not dot print1")
+
+acc.specialMethod=function(specialMethodTest)
+  print(specialMethodTest)
+end
+
+acc.specialMethod("smt test")
+
+--ç»§æ‰¿æµ‹è¯•
+SpecialAccount = Account:new()
+s = SpecialAccount:new{limit=1000.00}
+
+--å¤šé‡ç»§æ‰¿æµ‹è¯•
+Named = {}
+
+function Named:getname ()
+
+  return self.name
+
+end
+
+function Named:setname (n)
+
+  self.name = n
+
+end
+
+local function search (k, plist)
+
+  for i=1, table.getn(plist) do
+
+    local v = plist[i][k]
+
+    if v then return v end
+
+  end
+
+end
+
+function createClass (...)
+
+  local c = {}      -- new class
+
+  setmetatable(c, {__index = function (t, k)
+
+    return search(k, arg)
+
+    end})
+
+    c.__index = c
+
+    function c:new (o)
+
+      o = o or {}
+
+      setmetatable(o, c)
+
+      return o
+
+    end
+
+    return c
+
+  end
+  NamedAccount = createClass(Account, Named)
+
+  account = NamedAccount:new{name = "Paul"}
+
+  print(account:getname())
+
+
+  --ç§æœ‰æ€§
+
+function newAccount (initialBalance)
+    local self = {balance = initialBalance}
+
+    local withdraw = function (v)
+       self.balance = self.balance - v
+    end
+
+    local deposit = function (v)
+       self.balance = self.balance + v
+    end
+
+    local getBalance = function () return self.balance end
+
+    return {
+
+       withdraw = withdraw,
+       deposit = deposit,
+       getBalance = getBalance
+
+    }
+
+end
+
+acc1 = newAccount(100.00)
+acc1.withdraw(40.00)
+159
+print(acc1.getBalance())    --> 60
+
+
+
+
+
+
+
 --]]
 
 
------------------------------------Url ·Ö¸î----------------------------------------------
+-----------------------------------Url åˆ†å‰²----------------------------------------------
 
 --[=[
 do
@@ -1805,14 +2579,14 @@ function Split(szFullString, szSeparator)
 	local nSplitIndex = 1
 	local nSplitArray = {}
 	while true do
-	   local nFindLastIndex = string.find(szFullString, szSeparator, nFindStartIndex)
-	   if not nFindLastIndex then
-	    nSplitArray[nSplitIndex] = string.sub(szFullString, nFindStartIndex, string.len(szFullString))
-	    break
-	   end
-	   nSplitArray[nSplitIndex] = string.sub(szFullString, nFindStartIndex, nFindLastIndex - 1)
-	   nFindStartIndex = nFindLastIndex + string.len(szSeparator)
-	   nSplitIndex = nSplitIndex + 1
+  local nFindLastIndex = string.find(szFullString, szSeparator, nFindStartIndex)
+  if not nFindLastIndex then
+    nSplitArray[nSplitIndex] = string.sub(szFullString, nFindStartIndex, string.len(szFullString))
+    break
+  end
+  nSplitArray[nSplitIndex] = string.sub(szFullString, nFindStartIndex, nFindLastIndex - 1)
+  nFindStartIndex = nFindLastIndex + string.len(szSeparator)
+  nSplitIndex = nSplitIndex + 1
 	end
 	return nSplitArray
 end
@@ -1853,19 +2627,19 @@ end
 --]=]
 
 
--------------------------¼üÅÌÊäÈë²âÊÔ£¬ÇóÈÎÒâÊıµÄÆ½·½¡¢Æ½·½¸ù------------------------------
+-------------------------é”®ç›˜è¾“å…¥æµ‹è¯•ï¼Œæ±‚ä»»æ„æ•°çš„å¹³æ–¹ã€å¹³æ–¹æ ¹------------------------------
 
 --[[
 --input.lua
-print "ÇëÊäÈëÒ»¸öÊı"
+print "è¯·è¾“å…¥ä¸€ä¸ªæ•°"
 i=io.read()
 a=i^2
 b=math.sqrt(i)
-print(i .. "µÄÆ½·½=" .. a)
-print(i .. "Æ½·½¸ù=" .. b)
+print(i .. "çš„å¹³æ–¹=" .. a)
+print(i .. "å¹³æ–¹æ ¹=" .. b)
 --]]
 
-------------------------------print "ÓÃLua½â°ÙÇ®°Ù¼¦£º¹«¼¦5Ç® Ä¸¼¦3Ç® ¼¦×Ğ1/3Ç®"---------------------
+------------------------------print "ç”¨Luaè§£ç™¾é’±ç™¾é¸¡ï¼šå…¬é¸¡5é’± æ¯é¸¡3é’± é¸¡ä»”1/3é’±"---------------------
 
 --[[
 
@@ -1874,7 +2648,7 @@ for a=1,20 do
 	for b=1,33 do
 		for c=1,100 do
 			if a+b+c==100 and 5*a+3*b+1/3*c==100 then
-				print ("¹«¼¦" .. a,"Ä¸¼¦" .. b,"¼¦×Ğ" .. c)
+				print ("å…¬é¸¡" .. a,"æ¯é¸¡" .. b,"é¸¡ä»”" .. c)
 			end
 		end
 	end
@@ -1883,7 +2657,7 @@ print "OK"
 --io.read()
 --]]
 
-------------------------------------ÇåÆÁ·½·¨--------------------------------
+------------------------------------æ¸…å±æ–¹æ³•--------------------------------
 
 --[[
 
@@ -1895,7 +2669,7 @@ a={"aa","bb","cc","dd"}
 for i =1, #a do
 	print(a[i])
 end
-print ("±íÖĞ¹²ÓĞ"..#a.."¸ö³ÉÔ±")
+print ("è¡¨ä¸­å…±æœ‰"..#a.."ä¸ªæˆå‘˜")
 
 -- clear screen
 if os.getenv("OS")=="Windows_NT" then
@@ -1908,12 +2682,12 @@ end
 
 --]]
 
-----------------------Ğ´³öÎÄ¼ş------------------------
+----------------------å†™å‡ºæ–‡ä»¶------------------------
 
 --[[
 
 --inputfile.lua
---×·¼Ó·½Ê½
+--è¿½åŠ æ–¹å¼
 
 --myfile=io.open("c:\\namelist.txt","a")
 --print(myfile)
@@ -1929,12 +2703,12 @@ myfile:close()
 --[[
 
 file = io.open("c:\\namelist.txt","a+")
-file:write("1234567890 \n")   --Ğ´ÎÄ¼ş
+file:write("1234567890 \n")   --å†™æ–‡ä»¶
 file:close()
 
 
 file = io.open("c:\\namelist.txt","r")
-for l in file:lines() do   print(l)  end   --¶ÁÎÄ¼ş
+for l in file:lines() do   print(l)  end   --è¯»æ–‡ä»¶
 file:close()
 --]]
 
@@ -1942,7 +2716,7 @@ file:close()
 --[[
 
 while true do
-  io.write("ĞÕÃû£º")
+  io.write("å§“åï¼š")
   sname=io.read()
   if sname == "quit" then
     io.close(myfile)
@@ -1956,70 +2730,70 @@ print("OK!")
 
 --]]
 
----------------------------²âÊÔÎÄ±¾ÊäÈë --ÊäÈëquitÍË³ö--------------------
+---------------------------æµ‹è¯•æ–‡æœ¬è¾“å…¥ --è¾“å…¥quité€€å‡º--------------------
 
 --[[
 --write.lua
 
 while true do
-  io.write "ÇëÊäÈëÄãµÄÃû×Ö£º"
+  io.write "è¯·è¾“å…¥ä½ çš„åå­—ï¼š"
   name=io.read()
   if name=="quit" then
     break
   else
-    print("ÄúºÃ," .. name .. "!")
+    print("æ‚¨å¥½," .. name .. "!")
     print ""
   end
 end
 --]]
 
 
----------------------------²»¶¨²ÎÊıµÄÃîÓÃ-------------------------------------------
+---------------------------ä¸å®šå‚æ•°çš„å¦™ç”¨-------------------------------------------
 
 --[[
 function fun(...)
-  for i=1, arg.n do    -->½ÓÊÕµ½µÄËùÓĞ²ÎÊı¶¼±»×Ô¶¯Ğ´ÈëÒ»¸ö±íargÖĞ
-    print(arg[i])       -->arg.n±íÊ¾±íÖĞµÄ×î´óË÷Òı
+  for i=1, arg.n do    -->æ¥æ”¶åˆ°çš„æ‰€æœ‰å‚æ•°éƒ½è¢«è‡ªåŠ¨å†™å…¥ä¸€ä¸ªè¡¨argä¸­
+    print(arg[i])       -->arg.nè¡¨ç¤ºè¡¨ä¸­çš„æœ€å¤§ç´¢å¼•
   end
 end
 fun(1,2,3,"hello",true)
 --]]
 
----------------------------ÇóÆ½·½ºÍÁ¢·½¸ù-----------------------------------
+---------------------------æ±‚å¹³æ–¹å’Œç«‹æ–¹æ ¹-----------------------------------
 
 --[[
 
 a=3^2
 b=math.sqrt(4)
 
---¿ª3´Î·½
-c=8^(1/3)   -->½á¹û=2
+--å¼€3æ¬¡æ–¹
+c=8^(1/3)   -->ç»“æœ=2
 
 print(a,b,c)
 --]]
 
-------------------------------¶à¸ö±í´ïÊ½Ğ´ÔÚÒ»ĞĞÉÏ----------------------------
+------------------------------å¤šä¸ªè¡¨è¾¾å¼å†™åœ¨ä¸€è¡Œä¸Š----------------------------
 
 --[[
 a=1 b=2 c="hello"
 print(a,b,c)
 --]]
 
--------------------------Âß¼­ÔËËãµÄÌØÊâÓÃ·¨------------------------------------
+-------------------------é€»è¾‘è¿ç®—çš„ç‰¹æ®Šç”¨æ³•------------------------------------
 
 --[[
 
-x=false and 2     -->½á¹û=2,Èç¹ûx²»µÈ1,ÔòµÈÓÚ2
+x=false and 2     -->ç»“æœ=2,å¦‚æœxä¸ç­‰1,åˆ™ç­‰äº2
 print(x)
 
-x=1 and 2 and 3    -->½á¹û=3,·µ»Ø×îºóÒ»¸öÎª¼ÙµÄÖµ
+x=1 and 2 and 3    -->ç»“æœ=3,è¿”å›æœ€åä¸€ä¸ªä¸ºå‡çš„å€¼
 print(x)
 
-y=1 or 2      -->½á¹û=1,·µ»ØµÚÒ»¸öÎªÕæµÄÖµ
+y=1 or 2      -->ç»“æœ=1,è¿”å›ç¬¬ä¸€ä¸ªä¸ºçœŸçš„å€¼
 print(y)
 --]]
 
------------------------Lua ×÷ÎªÊı¾İÃèÊöÓïÑÔÊ¹ÓÃ----------------------------------
+-----------------------Lua ä½œä¸ºæ•°æ®æè¿°è¯­è¨€ä½¿ç”¨----------------------------------
 
 --[==[
 do
@@ -2116,27 +2890,27 @@ END()
 end
 --]==]
 
------------------------------¶ÁÈëÎÄ¼şµ½table.lua---------------------------------------
+-----------------------------è¯»å…¥æ–‡ä»¶åˆ°table.lua---------------------------------------
 
 --[==[
 
-os.execute("dir G:\\Temp\\TV\\*.txt /b >G:\\Temp\\TV\\temp.txt")    --Ğ´³öÎÄ¼ş
-io.input("G:\\Temp\\TV\\temp.txt")  --¶ÁÈëÎÄ¼ş
+os.execute("dir G:\\Temp\\TV\\*.txt /b >G:\\Temp\\TV\\temp.txt")    --å†™å‡ºæ–‡ä»¶
+io.input("G:\\Temp\\TV\\temp.txt")  --è¯»å…¥æ–‡ä»¶
 
---½«ÎÄ¼ş°´ĞĞĞ´Èëtable
+--å°†æ–‡ä»¶æŒ‰è¡Œå†™å…¥table
 
 files={}
 for t in io.lines() do
   table.insert(files,t)
 end
 
---±éÀútable
+--éå†table
 
 for i=1,#files do
   print (files[i])
 end
 
-for i=1,#t do     --2Î¬ Ë÷Òı4ÄÚÈİ
+for i=1,#t do     --2ç»´ ç´¢å¼•4å†…å®¹
   print (t[i]["4"])
 end
 
@@ -2191,6 +2965,170 @@ end
 
 --]]
 
+
+--[[
+
+--è¯»å–Csvæ–‡ä»¶
+
+--csvè§£æ
+
+
+-- å»æ‰å­—ç¬¦ä¸²å·¦ç©ºç™½
+local function trim_left(s)
+    return string.gsub(s, "^%s+", "");
+end
+
+
+-- å»æ‰å­—ç¬¦ä¸²å³ç©ºç™½
+local function trim_right(s)
+    return string.gsub(s, "%s+$", "");
+end
+
+-- è§£æä¸€è¡Œ
+local function parseline(line)
+    local ret = {};
+
+    local s = line .. ",";  -- æ·»åŠ é€—å·,ä¿è¯èƒ½å¾—åˆ°æœ€åä¸€ä¸ªå­—æ®µ
+
+    while (s ~= "") do
+        --print(0,s);
+        local v = "";
+        local tl = true;
+        local tr = true;
+
+        while(s ~= "" and string.find(s, "^,") == nil) do
+            --print(1,s);
+            if(string.find(s, "^\"")) then
+                local _,_,vx,vz = string.find(s, "^\"(.-)\"(.*)");
+                --print(2,vx,vz);
+                if(vx == nil) then
+                    return nil;  -- ä¸å®Œæ•´çš„ä¸€è¡Œ
+                end
+
+                -- å¼•å·å¼€å¤´çš„ä¸å»ç©ºç™½
+                if(v == "") then
+                    tl = false;
+                end
+
+                v = v..vx;
+                s = vz;
+
+                --print(3,v,s);
+
+                while(string.find(s, "^\"")) do
+                    local _,_,vx,vz = string.find(s, "^\"(.-)\"(.*)");
+                    --print(4,vx,vz);
+                    if(vx == nil) then
+                        return nil;
+                    end
+
+                    v = v.."\""..vx;
+                    s = vz;
+                    --print(5,v,s);
+                end
+
+                tr = true;
+            else
+                local _,_,vx,vz = string.find(s, "^(.-)([,\"].*)");
+                --print(6,vx,vz);
+                if(vx~=nil) then
+                    v = v..vx;
+                    s = vz;
+                else
+                    v = v..s;
+                    s = "";
+                end
+                --print(7,v,s);
+
+                tr = false;
+            end
+        end
+
+        if(tl) then v = trim_left(v); end
+        if(tr) then v = trim_right(v); end
+
+        ret[table.getn(ret)+1] = v;
+        --print(8,"ret["..table.getn(ret).."]=".."\""..v.."\"");
+
+        if(string.find(s, "^,")) then
+            s = string.gsub(s,"^,", "");
+        end
+
+    end
+
+    return ret;
+end
+
+
+
+--è§£æcsvæ–‡ä»¶çš„æ¯ä¸€è¡Œ
+local function getRowContent(file)
+    local content;
+
+    local check = false
+    local count = 0
+    while true do
+        local t = file:read()
+        if not t then  if count==0 then check = true end  break end
+
+        if not content then
+            content = t
+        else
+            content = content..t
+        end
+
+        local i = 1
+        while true do
+            local index = string.find(t, "\"", i)
+            if not index then break end
+            i = index + 1
+            count = count + 1
+        end
+
+        if count % 2 == 0 then check = true break end
+    end
+
+    if not check then  assert(1~=1) end
+    return content
+end
+
+
+
+--è§£æcsvæ–‡ä»¶
+function LoadCsv(fileName)
+    local ret = {};
+
+    local file = io.open(fileName, "r")
+    assert(file)
+    local content = {}
+    while true do
+        local line = getRowContent(file)
+        if not line then break end
+        table.insert(content, line)
+    end
+
+    for k,v in pairs(content) do
+        ret[table.getn(ret)+1] = parseline(v);
+    end
+
+
+    file:close()
+
+    return ret
+end
+
+
+--test
+--local t= LoadCsv("csvtesttxt.csv")
+--for k,v in pairs(t) do
+--  local tt = v
+--  local s = ""
+--  for i,j in pairs(tt) do
+--      s = string.format("%s,%s",s,j)
+--  end
+--  print ("",s)
+--end
+--]]
 
 -----------------Used to escape "'s by toCSV----------------------
 
@@ -2251,7 +3189,7 @@ local cs=toCSV(network)
 print(cs)
 
 file = io.open("d:\\namelist.txt","a+")
---file:write(cs)   --Ğ´ÎÄ¼ş
+--file:write(cs)   --å†™æ–‡ä»¶
 --file:write("name", "\t", "IP","\n")
 for k, v in pairs(network) do  file:write( k, "\t")  end ;  file:write("\n") ;
 for k, v in pairs(network) do  file:write( network.name, "\t",network.IP,"\n") end
@@ -2261,13 +3199,13 @@ file:close()
 --]==]
 
 
-----------------------ÏµÁĞ»¯----------------table ×ª s ----------------±í ×ª ×Ö·û´®---------------
+----------------------ç³»åˆ—åŒ–----------------table è½¬ s ----------------è¡¨ è½¬ å­—ç¬¦ä¸²---------------
 
 
 
 --[[
 
-function sz_T2S(_t)    --table×ª×Ö·û´®(Ö»È¡±ê×¼Ğ´·¨£¬ÒÔ·ÀÖ¹ÒòÏµÍ³µÄ±éÀú´ÎĞòµ¼ÖÂIDÂÒĞò)
+function sz_T2S(_t)    --tableè½¬å­—ç¬¦ä¸²(åªå–æ ‡å‡†å†™æ³•ï¼Œä»¥é˜²æ­¢å› ç³»ç»Ÿçš„éå†æ¬¡åºå¯¼è‡´IDä¹±åº)
     local szRet = "{"
     function doT2S(_i, _v)
         if "number" == type(_i) then
@@ -2301,8 +3239,8 @@ end
 
 
 
-function t_S2T(_szText)   --×Ö·û´®×ªtable(·´ĞòÁĞ»¯,Òì³£Êı¾İÖ±½Ó·µ»Ønil)
-    --Õ»
+function t_S2T(_szText)   --å­—ç¬¦ä¸²è½¬table(ååºåˆ—åŒ–,å¼‚å¸¸æ•°æ®ç›´æ¥è¿”å›nil)
+    --æ ˆ
     function stack_newStack()
         local first = 1
         local last = 0
@@ -2432,7 +3370,7 @@ function t_S2T(_szText)   --×Ö·û´®×ªtable(·´ĞòÁĞ»¯,Òì³£Êı¾İÖ±½Ó·µ»Ønil)
 end
 
 
-function t2s(_t)    --table×ª×Ö·û´®(Ö»È¡±ê×¼Ğ´·¨£¬ÒÔ·ÀÖ¹ÒòÏµÍ³µÄ±éÀú´ÎĞòµ¼ÖÂIDÂÒĞò)
+function t2s(_t)    --tableè½¬å­—ç¬¦ä¸²(åªå–æ ‡å‡†å†™æ³•ï¼Œä»¥é˜²æ­¢å› ç³»ç»Ÿçš„éå†æ¬¡åºå¯¼è‡´IDä¹±åº)
     local Ret = "{"
     function dot2s(_i, _v)
         if "number" == type(_i) then
@@ -2473,8 +3411,109 @@ print(type(t1));
 
 --]]
 
+-----------------------------å¤šçº¿ç¨‹---------------------------------------
 
---------------------------------------²ßÂÔ-------------------------------
+--[===[
+
+function addBuffer1()                                       -- å¾ªç¯æ£€æµ‹å’Œè¡¥å……buffer1
+    while true do                                                 -- ä¸»å¾ªç¯
+        if getColor(100, 100) ~= 0x000000 then  -- å¦‚æœæ²¡æœ‰buffer1
+            touchDown(0, 100, 100);                       -- é‡Šæ”¾buffer1
+            touchUp(0);
+        end
+        mSleep(500);
+        coroutine.yield();                                       -- ä¸»åŠ¨æŒ‚èµ·è‡ªå·±
+    end
+end
+
+
+function addBuffer2()                                       -- å¾ªç¯æ£€æµ‹å’Œè¡¥å……buffer2
+    while true do                                                 -- ä¸»å¾ªç¯
+        if getColor(200, 200) ~= 0x000000 then  -- å¦‚æœæ²¡æœ‰buffer2
+            touchDown(0, 200, 200);                       -- é‡Šæ”¾buffer2
+            touchUp(0);
+        end
+        mSleep(500);
+        coroutine.yield();                                       -- ä¸»åŠ¨æŒ‚èµ·è‡ªå·±
+    end
+end
+
+
+function addBuffer3()                                       -- å¾ªç¯æ£€æµ‹å’Œè¡¥å……buffer3
+    while true do                                                 -- ä¸»å¾ªç¯
+        if getColor(300, 300) ~= 0x000000 then  -- å¦‚æœæ²¡æœ‰buffer3
+            touchDown(0, 300, 300);                       -- é‡Šæ”¾buffer3
+            touchUp(0);
+        end
+        mSleep(500);
+        coroutine.yield();                                       -- ä¸»åŠ¨æŒ‚èµ·è‡ªå·±
+    end
+end
+
+
+function addBuffer4()                                       -- å¾ªç¯æ£€æµ‹å’Œè¡¥å……buffer4
+    while true do                                                 -- ä¸»å¾ªç¯
+        if getColor(400, 400) ~= 0x000000 then  -- å¦‚æœæ²¡æœ‰buffer4
+            touchDown(0, 400, 400);                       -- é‡Šæ”¾buffer4
+            touchUp(0);
+        end
+        mSleep(500);
+        coroutine.yield();                                        -- ä¸»åŠ¨æŒ‚èµ·è‡ªå·±
+    end
+end
+
+
+function addBuffer5()                                        -- å¾ªç¯æ£€æµ‹å’Œè¡¥å……buffer5
+    while true do                                                  -- ä¸»å¾ªç¯
+         if getColor(500, 500) ~= 0x000000 then  -- å¦‚æœæ²¡æœ‰buffer5
+            touchDown(0, 500, 500);                        -- é‡Šæ”¾buffer5
+            touchUp(0);
+        end
+        mSleep(500);
+        coroutine.yield();                                        -- ä¸»åŠ¨æŒ‚èµ·è‡ªå·±
+    end
+end
+
+
+function kill()                                                     -- å¾ªç¯æ‰“æ€ªä¸€ç›´åˆ°æ€ªç‰©æ­»äº¡
+    while true do
+        if getColor(600, 600) ~= 0x000000 then  -- å¦‚æœæ€ªç‰©æ²¡æ­»
+           touchDown(0, 1000, 1000);                    -- é‡Šæ”¾ä¸€æ¬¡æŠ€èƒ½
+           touchUp(0);
+        end
+        mSleep(500);
+        coroutine.yield();                                       -- ä¸»åŠ¨æŒ‚èµ·è‡ªå·±
+    end
+end
+
+
+function main()
+    co1 = coroutine.create(addBuffer1);
+    co2 = coroutine.create(addBuffer2);
+    co3 = coroutine.create(addBuffer3);
+    co4 = coroutine.create(addBuffer4);
+    co5 = coroutine.create(addBuffer5);
+    co6 = coroutine.create(kill);
+
+
+    while true do
+        coroutine.resume(co1);
+        coroutine.resume(co2);
+        coroutine.resume(co3);
+        coroutine.resume(co4);
+        coroutine.resume(co5);
+        coroutine.resume(co6);
+    end
+end
+
+
+
+
+
+
+--]===]
+
+--------------------------------------ç­–ç•¥-------------------------------
 
 -----------------------------MA--------------------------------
 
@@ -2508,7 +3547,7 @@ end
 
 function QryTradingAccount()
 	local Request={};
-	Request['current_account'] 	= current_account;
+	Request['current_account'] = current_account;
 	Request['InvestorID']		= current_account;
 	local retInfo, err = trade.FutureQueryFunds(Request);
 	if retInfo ~= nil then
@@ -2528,14 +3567,14 @@ Volume={460940,409390,868242,304560,545424,1381486,854432,4885342,2317778,317279
 Amount={5207639,4639566.5,9622944,3361051.75,6125999,16022356,10019326,61007192,29059926,37968820,32436236,30671970,33786040,11494554,45404700,37276556,27766370,11952068,13637747,23038346,18095026,15918905,13774463,47413844,42797352,57956864,111937872,78768008,37402000,73857248,119357208,91915528,85710776,79580488,47221056,55942560,51636592,65499164,51284800,133716920,90527648,50694364,51552992,82448744,36697632,43896264,27621322,26372626,33184998,49950120,31777406,26143792,24092378,12599457,13332614,14075254,11724511,25935010,20696754,16202013,19440812,19701296,20236638,14606954,12258778,20290838,30153604,13490177,24649758,19362276,51176628,57680720,91563744,40108388,77665736,58685056,24335824,109772952,54597660,36495308,66035852,125757008,119281624,45986492,80049888,63531272,55268052,86825976,51731540,36674148,59519984,37819020,50307508,36127516,61551284,82752296,45749748,93176056,102288112,0},
 }
 
---for k=1,#tbcd.Close do   print(tbcd.Close[k])  end   --²âÊÔÊä³ö
---for k=1,#tbcd["High"] do   print(tbcd["High"][k])  end   --²âÊÔÊä³ö
+--for k=1,#tbcd.Close do   print(tbcd.Close[k])  end   --æµ‹è¯•è¾“å‡º
+--for k=1,#tbcd["High"] do   print(tbcd["High"][k])  end   --æµ‹è¯•è¾“å‡º
 
 tbma=tbcd.Close
 tbmb=CalcMA(tbcd.Close,30,5)
 
 tbmc= tbmb or  {4,5,6,7,8}
-for k=1,#tbmc do   print(k,'\t', tbmc[k])  end   --²âÊÔÊä³ö
+for k=1,#tbmc do   print(k,'\t', tbmc[k])  end   --æµ‹è¯•è¾“å‡º
 
 end
 
@@ -2548,55 +3587,55 @@ end
 
 
 
---------------------------------------Ä£¿é-------------------------------
+--------------------------------------æ¨¡å—-------------------------------
 
 
 
-function QueryCC(nowAccount)      --²éÑ¯³Ö²Ö
+function QueryCC(nowAccount)      --æŸ¥è¯¢æŒä»“
 	local retMsg,msgErr = trade.StockQueryPosition(nowAccount);
 	if retMsg ~= nil then
---		print('³Ö²ÖÊÇ')
+--		print('æŒä»“æ˜¯')
 --		print(retMsg["RetData"]);
-		SendToControl(retMsg["RetData"] or {}, 'cc_ret'); --·¢ËÍ³Ö²ÖÖÁmain.lua cc_ret±äÁ¿
-		return retMsg["RetData"];  --·µ»Ø³Ö²Ö
+		SendToControl(retMsg["RetData"] or {}, 'cc_ret'); --å‘é€æŒä»“è‡³main.lua cc_retå˜é‡
+		return retMsg["RetData"];  --è¿”å›æŒä»“
 	else
-		SendToControl('³Ö²Ö²éÑ¯Ê§°Ü'..msgErr, 'ERROR');
+		SendToControl('æŒä»“æŸ¥è¯¢å¤±è´¥'..msgErr, 'ERROR');
 		return {};
 	end
 end
 
 
-function QueryCJ(nowAccount)      --²éÑ¯³É½»(µ±ÈÕ)
+function QueryCJ(nowAccount)      --æŸ¥è¯¢æˆäº¤(å½“æ—¥)
 	local time = os.date("%Y%m%d");
 	local retMsg,msgErr = trade.StockQueryExecution(nowAccount, nil, nil, nil, time, time);
 	if retMsg ~= nil then
---		print('----³É½»-----')
+--		print('----æˆäº¤-----')
 --		print(retMsg);
-		SendToControl(retMsg["RetData"] or {}, 'cj_ret');	--·¢ËÍ³É½»ÖÁmain.lua cj_ret±äÁ¿
-		return retMsg["RetData"];  --·µ»Ø³É½»
+		SendToControl(retMsg["RetData"] or {}, 'cj_ret');	--å‘é€æˆäº¤è‡³main.lua cj_retå˜é‡
+		return retMsg["RetData"];  --è¿”å›æˆäº¤
 	else
-		SendToControl('³É½»²éÑ¯Ê§°Ü'..msgErr, 'ERROR');
+		SendToControl('æˆäº¤æŸ¥è¯¢å¤±è´¥'..msgErr, 'ERROR');
 	end
 end
 
 
-function QueryWT(nowAccount)      --²éÑ¯Î¯ÍĞ(µ±ÈÕ)
+function QueryWT(nowAccount)      --æŸ¥è¯¢å§”æ‰˜(å½“æ—¥)
 	local time = os.date("%Y%m%d");
 	local retMsg,msgErr = trade.StockQueryEntrust(nowAccount,nil,nil,nil,time,time);
 	if retMsg ~= nil then
---		print('Î¯ÍĞ²éÑ¯³É¹¦£¡:::::::');
+--		print('å§”æ‰˜æŸ¥è¯¢æˆåŠŸï¼:::::::');
 --		print(retMsg);
-		SendToControl(retMsg["RetData"] or {}, 'entrust_ret');	--·¢ËÍÎ¯ÍĞÖÁmain.lua entrust_ret±äÁ¿
+		SendToControl(retMsg["RetData"] or {}, 'entrust_ret');	--å‘é€å§”æ‰˜è‡³main.lua entrust_retå˜é‡
 	else
 		print('QueryWT',msgErr);
-		SendToControl('Î¯ÍĞ²éÑ¯Ê§°Ü'..msgErr, 'ERROR');
+		SendToControl('å§”æ‰˜æŸ¥è¯¢å¤±è´¥'..msgErr, 'ERROR');
 	end
 end
 
 
 
 
---¸ñÊ½»¯ÈÕÆÚ
+--æ ¼å¼åŒ–æ—¥æœŸ
 function FormatDate(olddate)
 	local year = string.sub(olddate, 1, 4);
 	local month = string.sub(olddate, 6, 7);
@@ -2606,26 +3645,26 @@ function FormatDate(olddate)
 end
 
 
---¼ÆËãNÖÜÆÚ×î¸ß¼Û
-function  Highest(M,N,Price)                  --²ÎÊıM±íÊ¾¼ÆËãµÄµÚÒ»¸ùKÏßÖÁµ±Ç°µÄ¸ùÊı£¬NÊÇ¼ÆËãµÄ×îºóÒ»KÏßÖÁµ±Ç°µÄ¸ùÊı(²»±È½Ï)£¬
+--è®¡ç®—Nå‘¨æœŸæœ€é«˜ä»·
+function  Highest(M,N,Price)                  --å‚æ•°Mè¡¨ç¤ºè®¡ç®—çš„ç¬¬ä¸€æ ¹Kçº¿è‡³å½“å‰çš„æ ¹æ•°ï¼ŒNæ˜¯è®¡ç®—çš„æœ€åä¸€Kçº¿è‡³å½“å‰çš„æ ¹æ•°(ä¸æ¯”è¾ƒ)ï¼Œ
 	local hest=0;
-	for i=N,M,1 do                            --Ñ­»·´ÎÊı(±È½ÏK¸ùÊı): M-N+1 , N<M<=#-1  NÎª0Ê±, º¬×ÔÉí 1,Ç°Ò»¸ö(ĞÅºÅKÏß)
-		hest=math.max(hest,Price[#Price-i]);   --Çø¼äÑ­»·, ´Ó#-Mµ½#-NµÄ×î¸ßÖµ, ¼´×î½üNÆÚ²»±È½Ï, µ½×î½üN-1ÆÚ½ØÖ¹,
+	for i=N,M,1 do                            --å¾ªç¯æ¬¡æ•°(æ¯”è¾ƒKæ ¹æ•°): M-N+1 , N<M<=#-1  Nä¸º0æ—¶, å«è‡ªèº« 1,å‰ä¸€ä¸ª(ä¿¡å·Kçº¿)
+		hest=math.max(hest,Price[#Price-i]);   --åŒºé—´å¾ªç¯, ä»#-Måˆ°#-Nçš„æœ€é«˜å€¼, å³æœ€è¿‘NæœŸä¸æ¯”è¾ƒ, åˆ°æœ€è¿‘N-1æœŸæˆªæ­¢,
 --@		print(i,Price[#Price-i],#Price-i);     --@
 	end
 	return hest;
 end
 
---¼ÆËãNÖÜÆÚ×îµÍ¼Û
-function  Lowest(M,N,Price)                     --²ÎÊıM±íÊ¾¼ÆËãµÄµÚÒ»¸ùKÏßÖÁµ±Ç°µÄ¸ùÊı£¬NÊÇ¼ÆËãµÄ×îºóÒ»KÏßÖÁµ±Ç°µÄ¸ùÊı£¬
+--è®¡ç®—Nå‘¨æœŸæœ€ä½ä»·
+function  Lowest(M,N,Price)                     --å‚æ•°Mè¡¨ç¤ºè®¡ç®—çš„ç¬¬ä¸€æ ¹Kçº¿è‡³å½“å‰çš„æ ¹æ•°ï¼ŒNæ˜¯è®¡ç®—çš„æœ€åä¸€Kçº¿è‡³å½“å‰çš„æ ¹æ•°ï¼Œ
 	local lest=Price[#Price-M];                 --M > N
-	for i=N,M,1 do                              --´Ó-Mµ½-N£¬
+	for i=N,M,1 do                              --ä»-Måˆ°-Nï¼Œ
 		lest=math.min(lest,Price[#Price-i]);
 	end
 	return lest;
 end
 
---½«Ê±¼ä×ª»»ÎªÃë
+--å°†æ—¶é—´è½¬æ¢ä¸ºç§’
 function timetosec(time)
 
 	local day1 = {};
@@ -2634,7 +3673,7 @@ function timetosec(time)
 	return lasttimesec;
 end
 
---´òÓ¡ĞÅÏ¢--ÖĞ¼ä²¿--------
+--æ‰“å°ä¿¡æ¯--ä¸­é—´éƒ¨--------
 function SendInfoLog(msgtype, message)
 	local msginfo = string.format("[%s]", message);
 	local InfoLog = {};
@@ -2643,16 +3682,20 @@ function SendInfoLog(msgtype, message)
 	SendToControl(InfoLog,"InfoLog");
 end
 
-----------------------------------Æô¶¯º¯Êı init()------------------------------------------
+
+----------------------------------å¯åŠ¨å‡½æ•° init()------------------------------------------
 
 function init()
-	page.callAsy('onStart', {});                --< Òìµ÷ cl.lua onStartº¯Êı
-	page.setPageRecvCallBack(onRecvCb);         --»Øµ÷º¯ÊıonRecvCb
+	page.callAsy('onStart', {});                --< å¼‚è°ƒ cl.lua onStartå‡½æ•°
+	page.setPageRecvCallBack(onRecvCb);         --å›è°ƒå‡½æ•°onRecvCb
+    page.callAsy("OnStart",{})      --å¯åŠ¨ç­–ç•¥
+    page.setPageRecvCallBack(HandleRecvCallBack);    --æ³¨å†Œå›è°ƒ
+
 end
 init();
 
 
-----------------------------------¹¦ÄÜ²âÊÔº¯Êı ÏÔÊ¾log.html------------------------------------------
+----------------------------------åŠŸèƒ½æµ‹è¯•å‡½æ•° æ˜¾ç¤ºlog.html------------------------------------------
 
 function ConsolePrint(lMsgType,lMsg,lTitle)
 	local lCurTime = string.format("[%s]", os.date("%Y-%m-%d %H:%M:%S"));
@@ -2660,22 +3703,22 @@ function ConsolePrint(lMsgType,lMsg,lTitle)
 	div_log:append_html(lPrint);
 end
 
---ConsolePrint("lMsgType","lMsg","lTitle") ; --P
+--ConsolePrint("lMsgType","lMsg","lTitle") ; --
 
-function logPrint(logMsg)                       --ÈÕÖ¾ÏûÏ¢´òÓ¡ logmsg±äÁ¿ .index .msg
+function logPrint(logMsg)                       --æ—¥å¿—æ¶ˆæ¯æ‰“å° logmsgå˜é‡ .index .msg
 	if messageList == nil then messageList = {};  end
 	table.insert(messageList, logMsg);
 	local function sortIndex(a,b) return a.index>b.index; end
 	table.sort(messageList, sortIndex);
 	local tbhtml={};
 	for k,v in pairs(messageList) do
-		table.insert(tbhtml,string.format([[<tr><td>--&lt;%s</td></tr>]],v.msg));  -- &lt; html×Ö·û<
+		table.insert(tbhtml,string.format([[<tr><td>--&lt;%s</td></tr>]],v.msg));  -- &lt; htmlå­—ç¬¦<
 	end
 	log.html = table.concat(tbhtml,'');
 end
 
 
-function t2s(_t)    --table×ª×Ö·û´®(Ö»È¡±ê×¼Ğ´·¨£¬ÒÔ·ÀÖ¹ÒòÏµÍ³µÄ±éÀú´ÎĞòµ¼ÖÂIDÂÒĞò)  ÀàËÆ¸ÄĞ´µÄprint
+function t2s(_t)    --tableè½¬å­—ç¬¦ä¸²(åªå–æ ‡å‡†å†™æ³•ï¼Œä»¥é˜²æ­¢å› ç³»ç»Ÿçš„éå†æ¬¡åºå¯¼è‡´IDä¹±åº)  ç±»ä¼¼æ”¹å†™çš„print
     local Ret = "{"
     function dot2s(_i, _v)
         if "number" == type(_i) then
@@ -2707,14 +3750,14 @@ function t2s(_t)    --table×ª×Ö·û´®(Ö»È¡±ê×¼Ğ´·¨£¬ÒÔ·ÀÖ¹ÒòÏµÍ³µÄ±éÀú´ÎĞòµ¼ÖÂIDÂÒ
     return Ret
 end
 
-function test(Var,vName)                                   --test("123"); --> 123 ½ö×÷²é¿´±äÁ¿Öµµ÷ÊÔÓÃ, ºÄÄÚ´æ
+function test(Var,vName)                                   --test("123"); --> 123 ä»…ä½œæŸ¥çœ‹å˜é‡å€¼è°ƒè¯•ç”¨, è€—å†…å­˜
 	if type(Var)=="table" then Var=t2s(Var); end;
-	local test={index=0, msg="", }                         --ÉùÃ÷²âÊÔ±äÁ¿
-	local daySec = os.date("*t", os.time())                --µ±ÈÕÊ±¼äÃ÷Ï¸
-	daySec.hour=0; daySec.min=0; daySec.sec=0;             --µ±ÈÕÊ±·ÖÃëÖÃ0, ÔÙÇó²îÖµ, ¼´Îªµ±ÈÕÃëÊı
-	local dSec=os.time()-os.time(daySec);                  --µ±ÌìÃëÊı 86400(×Ü) --½«Ê±¼ä×ª»»ÎªÃë
-	for i=1,10^7 do    end;                                --¿ÕÑ­»·, È¡cpuºÁÃëÊ±¼ä²î
-	test.index= 86400*10^4-(dSec*10^4+os.clock()*10^2) ;   --ÏÈ½øÏÈ³ö
+	local test={index=0, msg="", }                         --å£°æ˜æµ‹è¯•å˜é‡
+	local daySec = os.date("*t", os.time())                --å½“æ—¥æ—¶é—´æ˜ç»†
+	daySec.hour=0; daySec.min=0; daySec.sec=0;             --å½“æ—¥æ—¶åˆ†ç§’ç½®0, å†æ±‚å·®å€¼, å³ä¸ºå½“æ—¥ç§’æ•°
+	local dSec=os.time()-os.time(daySec);                  --å½“å¤©ç§’æ•° 86400(æ€») --å°†æ—¶é—´è½¬æ¢ä¸ºç§’
+	for i=1,10^7 do    end;                                --ç©ºå¾ªç¯, å–cpuæ¯«ç§’æ—¶é—´å·®
+	test.index= 86400*10^4-(dSec*10^4+os.clock()*10^2) ;   --å…ˆè¿›å…ˆå‡º
 	if vName==nil then vName="Var"; end
 	test.msg=string.format("[%s]:[%s]:[%s]", os.date("%H:%M:%S"), vName, Var);
 	logPrint(test);
@@ -2723,6 +3766,96 @@ end
 --	test("-------------------aTion 20140630----------------------");
 --	local t1={1,2,{"a",3},"b", ["th"]="c", };
 --	test(t1,"t1");  --> {[1]=1,[2]=2,[3]={[1]="a",[2]=3,},[4]="b",["th"]="c",}
+
+
+
+function outFileX(data,fPathName)                    --è¾“å‡ºå˜é‡åˆ°æ–‡ä»¶"d:\\test20140701.txt", ä¾¿äºæµ‹è¯•è§‚æµ‹
+	local today=os.date("%Y%m%d",os.time())
+	fPathName=fPathName or "d:\\test"..today..".txt"   --é»˜è®¤"d:\\test(å½“å‰æ—¥æœŸ).txt"
+	local f = assert(io.open(fPathName, "a+"));     --"d:\\test20140701.txt"
+--	f:write(os.date("%Y%m%d %X",os.time()).."\n")   --è¾“å‡ºä¸‰å±‚, ç¬¬å››å±‚ååˆå¹¶æˆå­—ç¬¦ä¸²è¾“å‡º
+
+	if type(data)~="table" then f:write(data..'\n')
+	else
+		for k,v in pairs(data) do
+			if type(v)~="table" then f:write(k..' '..v..'\n')
+			else
+				outFile(v)                         --é€’å½’å¾ªç¯, ä½†ä»…æ˜¾ç¤ºå•å±‚, é¡»é‡æ–°å¯¹åº”ç†é¡º
+			end
+		end
+	end
+	f:close()
+end
+
+--local tData={1,2,{31,{321,322,{3231,3232,3233},324,{3251,3252,3253,3254}}},4,5};
+--outFileX(tData)                                    --è¾“å‡ºåˆ°æ–‡ä»¶"d:\\test20140701.txt"(é»˜è®¤)
+
+
+function outFileY(data,fPathName)                            --è¾“å‡ºæ—¥å¿—æ–‡ä»¶(TQ)
+  local today=os.date("%Y%m%d",os.time())
+  fPathName=fPathName or "d:\\test"..today..".txt"         --é»˜è®¤"d:\\test(å½“å‰æ—¥æœŸ).txt"
+  local f = assert(io.open(fPathName, "a+"));              --"d:\\test20140701.txt"
+  local dayTime=os.date("%Y%m%d %X").."\t";
+  f:write(dayTime..json.encode(data)..'\n')                --jsonå­—ç¬¦ä¸²ç¼–ç  æ•°ç»„å’Œhashå€¼æ··åˆç¼–ç , ?åªèƒ½ç¼–æ•°ç»„
+  f:close()
+end
+
+
+
+function outFile(data,fPathName)                    --è¾“å‡ºå˜é‡åˆ°æ–‡ä»¶"d:\\test20140701.txt", ä¾¿äºæµ‹è¯•è§‚æµ‹
+	local today=os.date("%Y%m%d",os.time())
+	fPathName=fPathName or "d:\\test"..today..".txt"   --é»˜è®¤"d:\\test(å½“å‰æ—¥æœŸ).txt"
+	local f = assert(io.open(fPathName, "a+"));     --"d:\\test20140701.txt"
+	f:write(os.date("%Y%m%d %X",os.time()).."\n")   --è¾“å‡ºå››å±‚, ç¬¬äº”å±‚ååˆå¹¶æˆå­—ç¬¦ä¸²è¾“å‡º
+
+	if type(data)~="table" then f:write(data..'\n')
+	else
+		for k,v in pairs(data) do
+			if type(v)~="table" then f:write(k..' '..v..'\n')
+			else
+				for k1,v1 in pairs(v) do
+					if  type(v1)~="table"  then	f:write(k..' '..k1..' '..v1..'\n')
+					else
+						for k2,v2 in pairs(v1) do
+							if type(v2)~="table" then f:write(k..' '..k1..' '..k2..' '..v2..'\n')
+							else
+								for k3,v3 in pairs(v2) do
+									if type(v3)~="table" then f:write(k..' '..k1..' '..k2..' '..k3..' '..v3..'\n')
+									else f:write(k..' '..k1..' '..k2..' '..k3..' '..table.concat(v3,',')..'\n')
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	f:close()
+end
+
+--local tData={1,2,{31,{321,322,{3231,3232,3233},324,{3251,3252,3253,3254}}},4,5};
+--outFile(tData)                                    --è¾“å‡ºåˆ°æ–‡ä»¶"d:\\test20140701.txt"(é»˜è®¤)
+
+function packQueryFunds(nowAccount)  --å°è£…trade.StockQueryFunds è¿”å›è´¦æˆ·ä¿¡æ¯ å¤„ç†è¿”å›["TotalAssets"]=0 é—®é¢˜çš„å°è£…
+  local retInfo, errorInfo = trade.StockQueryFunds(nowAccount,'SH'); --å–å¾—è´¦æˆ·ä¿¡æ¯ï¼Œå¡«'SH'æ²¡æœ‰å½±å“
+  if retInfo ~= nil then
+      if retInfo['TotalAssets']==0  then
+        local ccTable = QueryCC(nowAccount); --æŸ¥è¯¢æŒä»“è¿”å›
+      for k,v in pairs(ccTable) do
+        retInfo['TotalAssets'] = retInfo['TotalAssets'] + v["OutMainCntryUIndex"];  --æ¯åªè‚¡ç¥¨æŒä»“å¸‚å€¼ç›¸åŠ 
+      end
+      retInfo['TotalAssets'] = retInfo['TotalAssets'] + retInfo["FrozenValue"] + retInfo['AvailableValue'];
+      return retInfo;  --è‚¡ç¥¨å¸‚å€¼+å†»ç»“èµ„é‡‘+å¯ç”¨èµ„é‡‘
+    else
+      return retInfo;
+      end
+  else
+    SendInfoLog("Error", 'è´¦æˆ·: '..nowAccount..' æŸ¥è¯¢èµ„é‡‘å¤±è´¥! '..tostring(errorInfo) );
+    return ;
+  end
+end
+
 
 
 
